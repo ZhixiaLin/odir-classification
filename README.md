@@ -1,11 +1,11 @@
 正常训练
 ```
-python main.py
+python main.py --train
 ```
 
 快速训练
 ```
-python main.py --fast
+python main.py --train --fast
 ```
 
 测试单张图片
