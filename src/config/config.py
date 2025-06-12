@@ -20,8 +20,8 @@ class Config:
     VALID_DATA_PATH = os.path.join(DATA_ROOT, 'valid')
     EVAL_DATA_PATH = os.path.join(DATA_ROOT, 'valid')
     IMAGE_SIZE = 224
-    BATCH_SIZE = 32  # 增加批次大小以提高训练稳定性
-    NUM_WORKERS = 4
+    BATCH_SIZE = 16  # 增加批次大小以提高梯度稳定性
+    NUM_WORKERS = 2  # 减少工作进程数
     
     # 模型配置
     MODEL_PREFIX = "eye_disease"
@@ -30,16 +30,17 @@ class Config:
     KEEP_CHECKPOINT_MAX = 5
     NUM_CLASSES = 8
     
-    # 训练配置
-    EPOCHS = 100  # 增加训练轮数
-    LEARNING_RATE = 0.001  # 初始学习率
-    WEIGHT_DECAY = 1e-4  # 权重衰减
+    # 训练配置 - 10小时内完成
+    EPOCHS = 18  # 18轮 × 34分钟 = 10.2小时
+    LEARNING_RATE = 0.0008  # 稍微提高学习率补偿轮数减少
+    WEIGHT_DECAY = 5e-5  # 进一步减少正则化
     MOMENTUM = 0.9
-    EARLY_STOPPING_PATIENCE = 15  # 增加早停耐心值
-    MIN_DELTA = 0.001
+    EARLY_STOPPING_PATIENCE = 15  # 减少耐心，避免浪费时间
+    MIN_DELTA = 0.001  # 敏感的改善检测
     
     # 训练目标设置
-    TARGET_STEPS_PER_EPOCH = 100
+    TARGET_STEPS_PER_EPOCH = 100  # 适中的步数
+    FAST_TRAINING = False  # 快速训练模式标志
     
     # 类别名称
     CLASS_NAMES = [
@@ -58,8 +59,8 @@ class Config:
     STD = [0.229, 0.224, 0.225]
 
     # 学习率调度器配置
-    MIN_LR = 1e-6  # 最小学习率
-    MAX_LR = 0.001  # 最大学习率
+    MIN_LR = 1e-7  # 降低最小学习率
+    MAX_LR = 0.0001  # 降低最大学习率
 
     @classmethod
     def to_dict(cls):

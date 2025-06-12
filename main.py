@@ -100,10 +100,11 @@ def main():
         # 训练模式
         if args.fast:
             print("Starting fast training...")
-            Config.EPOCHS = 5
-            Config.BATCH_SIZE = 32
+            Config.EPOCHS = 25  # 快速训练使用25轮
+            Config.FAST_TRAINING = True  # 设置快速训练标志
         else:
             print("Starting full training...")
+            Config.FAST_TRAINING = False
         train()
         return
 
