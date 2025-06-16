@@ -1,3 +1,0 @@
-"""
-Eye Disease Classification Project
-""" 
