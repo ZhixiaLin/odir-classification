@@ -66,19 +66,14 @@ python train.py --config configs/odir/resnet50.yaml --fast
 
 ## Validation
 
-To validate a trained model:
-```bash
-python validate.py --config configs/odir/resnet50.yaml --ckpt_path ./checkpoints/resnet50-25_79.ckpt
-```
-
 验证模型，计算准确率
 ```
-python validate_by_category.py --config configs/odir/resnet50.yaml --ckpt_path checkpoints/resnet50-25_79.ckpt --mode accuracy_only
+python validate_by_category.py --config configs/odir/resnet50.yaml --ckpt_path checkpoints/resnet50-best.ckpt --mode accuracy_only
 ```
 
 验证模型并保存错误分类的图片路径
 ```
-python validate_by_category.py --config configs/odir/resnet50.yaml --ckpt_path checkpoints/resnet50-25_79.ckpt --mode full
+python validate_by_category.py --config configs/odir/resnet50.yaml --ckpt_path checkpoints/resnet50-best.ckpt --mode full
 ```
 
 To move all misclassified images
