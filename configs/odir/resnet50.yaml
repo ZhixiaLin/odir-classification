@@ -50,6 +50,6 @@ reduction: 'mean'
 fast_training:
   enabled: False
   epochs: 25
-  batch_size: 64
-  lr: 0.002
-  warmup_epochs: 2 
+  batch_size: 128
+  lr: 0.003
+  warmup_epochs: 1 
