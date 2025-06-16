@@ -87,7 +87,8 @@ class Config:
             'epoch_size': fast_config.get('epochs', 25),
             'batch_size': fast_config.get('batch_size', 64),
             'lr': fast_config.get('lr', 0.002),
-            'warmup_epochs': fast_config.get('warmup_epochs', 2)
+            'warmup_epochs': fast_config.get('warmup_epochs', 2),
+            'max_steps_per_epoch': fast_config.get('max_steps_per_epoch', None)
         })
     
     def get(self, key: str, default: Any = None) -> Any:

@@ -121,6 +121,10 @@ def parse_args():
                       help='device target, support CPU, GPU, Ascend')
     parser.add_argument('--fast', action='store_true',
                       help='enable fast training mode')
+    parser.add_argument('--fast_epochs', type=int,
+                      help='number of epochs in fast mode (overrides config)')
+    parser.add_argument('--fast_max_steps', type=int,
+                      help='maximum steps per epoch in fast mode (overrides config)')
     return parser.parse_args()
 
 def main():
@@ -134,6 +138,11 @@ def main():
     config = Config(args.config)
     if args.fast:
         config.config['fast_training'] = {'enabled': True}
+        # Override fast training parameters if specified
+        if args.fast_epochs is not None:
+            config.config['fast_training']['epochs'] = args.fast_epochs
+        if args.fast_max_steps is not None:
+            config.config['fast_training']['max_steps_per_epoch'] = args.fast_max_steps
         config._apply_fast_training()
     
     # 检查是否存在检查点
@@ -174,6 +183,16 @@ def main():
         image_size=config['image_size']
     )
     
+    # Project only image and label columns for training
+    dataset_train = dataset_train.project(columns=["image", "label"])
+    
+    # Apply max steps per epoch limit if specified
+    if config.get('max_steps_per_epoch') is not None:
+        steps_per_epoch = dataset_train.get_dataset_size()
+        if steps_per_epoch > config['max_steps_per_epoch']:
+            print(f"\nLimiting training to {config['max_steps_per_epoch']} steps per epoch")
+            dataset_train = dataset_train.take(config['max_steps_per_epoch'])
+    
     odir_val = ODIRDataset(
         root=config['data_dir'],
         split=config['val_split'],
@@ -185,6 +204,9 @@ def main():
         is_training=False,
         image_size=config['image_size']
     )
+    
+    # Project only image and label columns for validation
+    dataset_val = dataset_val.project(columns=["image", "label"])
     
     # Create model
     network = create_model(
