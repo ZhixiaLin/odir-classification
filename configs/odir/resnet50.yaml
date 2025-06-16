@@ -1,0 +1,55 @@
+# model config
+model: 'resnet50'
+num_classes: 8
+pretrained: True
+ckpt_path: ''
+keep_checkpoint_max: 10
+ckpt_save_dir: 'checkpoints'  # Will be resolved relative to project root
+epoch_size: 100
+dataset_sink_mode: True
+amp_level: 'O0'
+
+# dataset config
+dataset: 'odir'
+data_dir: 'data/odir4'  # Will be resolved relative to project root
+train_split: 'train'
+val_split: 'valid'
+num_parallel_workers: 8
+batch_size: 32
+image_size: 224
+
+# augmentation config
+auto_augment: True
+re_prob: 0.5
+re_value: 'random'
+color_jitter: 0.4
+interpolation: 'bicubic'
+
+# optimizer config
+opt: 'adamw'
+lr: 0.001
+weight_decay: 0.0001
+momentum: 0.9
+loss_scale: 1.0
+use_nesterov: False
+
+# lr scheduler config
+scheduler: 'cosine_decay'
+min_lr: 0.00001
+decay_epochs: 80
+lr_gamma: 0.1
+warmup_epochs: 5
+warmup_factor: 0.1
+
+# loss config
+loss: 'ce'
+label_smoothing: 0.1
+reduction: 'mean'
+
+# fast training config
+fast_training:
+  enabled: False
+  epochs: 25
+  batch_size: 64
+  lr: 0.002
+  warmup_epochs: 2 

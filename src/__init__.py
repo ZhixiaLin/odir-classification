@@ -1,3 +1,3 @@
 """
-Source code for Eye Disease Classification
+ODIR Eye Disease Classification package
 """ 
