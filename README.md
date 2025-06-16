@@ -64,6 +64,10 @@ python train.py --config configs/odir/resnet50.yaml
 python train.py --config configs/odir/resnet50.yaml --fast
 ```
 
+```bash
+python train.py --config configs/odir/resnet50.yaml --fast --fast_epochs 5 --fast_max_steps 2
+```
+
 ## Validation
 
 验证模型，计算准确率
