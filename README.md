@@ -76,12 +76,12 @@ python predict_single.py --image_path data/odir4/valid/g1-glaucoma/image13.png
 ```
 
 验证模型，计算准确率
-```
+```bash
 python validate_by_category.py --config configs/odir/resnet50.yaml --ckpt_path checkpoints/resnet50-best.ckpt --mode accuracy_only
 ```
 
 验证模型并保存错误分类的图片路径
-```
+```bash
 python validate_by_category.py --config configs/odir/resnet50.yaml --ckpt_path checkpoints/resnet50-best.ckpt --mode full
 ```
 
