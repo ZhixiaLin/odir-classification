@@ -19,7 +19,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Predict single image')
     parser.add_argument('--config', type=str, default='configs/odir/resnet50.yaml',
                       help='path to config file')
-    parser.add_argument('--ckpt_path', type=str, required=True,
+    parser.add_argument('--ckpt_path', type=str, default='checkpoints/resnet50-best.ckpt',
                       help='path to checkpoint file')
     parser.add_argument('--image_path', type=str, required=True,
                       help='path to the image to predict')
