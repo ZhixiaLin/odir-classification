@@ -204,3 +204,5 @@ data.zip
 reference/
 
 rank_0/
+
+misclassified_images.txt
