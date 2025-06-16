@@ -26,8 +26,8 @@ def parse_args():
                       help='path to checkpoint file')
     parser.add_argument('--device_target', type=str, default='CPU',
                       help='device target, support CPU, GPU, Ascend')
-    parser.add_argument('--output_file', type=str, default='misclassified_images.txt',
-                      help='path to output file for misclassified images')
+    parser.add_argument('--mode', type=str, choices=['accuracy_only', 'full'], default='full',
+                      help='validation mode: accuracy_only or full (accuracy + file writing)')
     return parser.parse_args()
 
 def main():
@@ -76,27 +76,35 @@ def main():
     
     # Initialize counters
     category_stats = defaultdict(lambda: {'correct': 0, 'total': 0})
-    misclassified_images = []
+    misclassified_images = []  # Use list since we don't need to deduplicate anymore
     
     # Get class names
     class_names = sorted(os.listdir(os.path.join(config['data_dir'], config['val_split'])))
     
-    # Check if output file exists
-    if os.path.exists(args.output_file):
-        print(f"\nWarning: File {args.output_file} already exists and will be overwritten.")
+    # Create misclassified directory if it doesn't exist
+    misclassified_dir = os.path.join('data', 'odir4', 'misclassified')
+    os.makedirs(misclassified_dir, exist_ok=True)
+    output_file = os.path.join(misclassified_dir, 'misclassified_images.txt')
+    
+    # Check if output file exists (only in full mode)
+    if args.mode == 'full' and os.path.exists(output_file):
+        print(f"\nWarning: File {output_file} already exists and will be overwritten.")
         response = input("Do you want to continue? (y/n): ")
         if response.lower() != 'y':
             print("Operation cancelled.")
             return
     
-    print("\nStarting evaluation by category...")
+    print(f"\nStarting evaluation in {args.mode} mode...")
+    print(f"Data directory: {os.path.abspath(config['data_dir'])}")
+    print(f"Validation split: {config['val_split']}")
+    print(f"Classes found: {class_names}")
     
     # Create progress bar
     pbar = tqdm(total=len(dataset_val), desc="Processing images")
     
     # Evaluate each image
     for data in dataset_val:
-        image, label = data
+        image, label, image_path_tensor = data    
         pred = network(image)
         pred_class = ops.argmax(pred, dim=1)
         
@@ -109,10 +117,13 @@ def main():
         if actual_class == predicted_class:
             category_stats[actual_class]['correct'] += 1
         else:
-            # Store misclassified image path
-            image_path = os.path.join(config['data_dir'], config['val_split'], 
-                                    actual_class, f"image{label.asnumpy()[0]}.png")
-            misclassified_images.append(f"{image_path} | Actual: {actual_class} | Predicted: {predicted_class}")
+            # Store misclassified image path (only in full mode)
+            if args.mode == 'full':
+                image_path = image_path_tensor.asnumpy().item()
+                if image_path and os.path.exists(image_path):
+                    misclassified_images.append(f"{image_path} | Actual: {actual_class} | Predicted: {predicted_class}")
+                else:
+                    print(f"Warning: Could not find image for class {actual_class}")
         
         # Update progress bar
         pbar.update(1)
@@ -131,11 +142,16 @@ def main():
         print(f"Accuracy: {accuracy:.2f}%")
         print("-" * 50)
     
-    # Save misclassified images to file
-    with open(args.output_file, 'w') as f:
-        for line in misclassified_images:
-            f.write(line + '\n')
-    print(f"\nMisclassified images have been saved to {args.output_file}")
+    # Save misclassified images to file (only in full mode)
+    if args.mode == 'full':
+        if misclassified_images:
+            with open(output_file, 'w') as f:
+                for line in sorted(misclassified_images):  # Sort for consistent output
+                    f.write(line + '\n')
+            print(f"\nMisclassified images have been saved to {output_file}")
+            print(f"Total misclassified images: {len(misclassified_images)}")
+        else:
+            print("\nNo misclassified images found to save.")
 
 if __name__ == '__main__':
     main() 

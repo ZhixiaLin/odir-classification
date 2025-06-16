@@ -68,7 +68,37 @@ python train.py --config configs/odir/resnet50.yaml --fast
 
 To validate a trained model:
 ```bash
-python validate.py --config configs/odir/resnet50.yaml --ckpt_path ./checkpoints/resnet50.ckpt
+python validate.py --config configs/odir/resnet50.yaml --ckpt_path ./checkpoints/resnet50-25_79.ckpt
+```
+
+验证模型，计算准确率
+```
+python validate_by_category.py --config configs/odir/resnet50.yaml --ckpt_path checkpoints/resnet50-25_79.ckpt --mode accuracy_only
+```
+
+验证模型并保存错误分类的图片路径
+```
+python validate_by_category.py --config configs/odir/resnet50.yaml --ckpt_path checkpoints/resnet50-25_79.ckpt --mode full
+```
+
+To move all misclassified images
+```
+python clean_misclassified.py --action move_all
+```
+
+To move and keep a percentage of misclassified images (e.g., keep 20%)
+```
+python clean_misclassified.py --action move_percentage --keep_percentage 20
+```
+
+To deltete all files under misclassified_images/
+```
+python clean_misclassified.py --action clean_quarantine
+```
+
+To see what would happen without actually doing it (dry run)
+```
+python clean_misclassified.py --action move --dry_run
 ```
 
 ## Model Architecture
