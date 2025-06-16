@@ -70,6 +70,11 @@ python train.py --config configs/odir/resnet50.yaml --fast --fast_epochs 5 --fas
 
 ## Validation
 
+单张
+```bash
+python predict_single.py --image_path data/odir4/valid/g1-glaucoma/image13.png
+```
+
 验证模型，计算准确率
 ```
 python validate_by_category.py --config configs/odir/resnet50.yaml --ckpt_path checkpoints/resnet50-best.ckpt --mode accuracy_only
