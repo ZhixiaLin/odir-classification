@@ -12,6 +12,7 @@ from mindcv.loss import create_loss
 from config.config import Config
 import numpy as np
 from collections import defaultdict
+from tqdm import tqdm
 
 # Add the current directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -80,8 +81,20 @@ def main():
     # Get class names
     class_names = sorted(os.listdir(os.path.join(config['data_dir'], config['val_split'])))
     
+    # Check if output file exists
+    if os.path.exists(args.output_file):
+        print(f"\nWarning: File {args.output_file} already exists and will be overwritten.")
+        response = input("Do you want to continue? (y/n): ")
+        if response.lower() != 'y':
+            print("Operation cancelled.")
+            return
+    
+    print("\nStarting evaluation by category...")
+    
+    # Create progress bar
+    pbar = tqdm(total=len(dataset_val), desc="Processing images")
+    
     # Evaluate each image
-    print("Starting evaluation by category...")
     for data in dataset_val:
         image, label = data
         pred = network(image)
@@ -100,8 +113,14 @@ def main():
             image_path = os.path.join(config['data_dir'], config['val_split'], 
                                     actual_class, f"image{label.asnumpy()[0]}.png")
             misclassified_images.append(f"{image_path} | Actual: {actual_class} | Predicted: {predicted_class}")
+        
+        # Update progress bar
+        pbar.update(1)
     
-    # Print results
+    # Close progress bar
+    pbar.close()
+    
+    # Print final results
     print("\nCategory-wise Results:")
     print("-" * 50)
     for category in sorted(category_stats.keys()):
