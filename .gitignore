@@ -1,62 +1,78 @@
 # =================================================================
 # Global / General Ignores
-# 通用的忽略规则，对所有项目生效
 # =================================================================
+# Logs
 *.log
+
+# OS generated files
 .DS_Store
+
+# IDE settings
 .vscode/
 .idea/
 
+
 # =================================================================
-# Java Backend Rules (from front-end/)
-# Java后端项目的忽略规则 (来自 front-end/ 目录)
+# Java Backend Rules (front-end/)
 # =================================================================
-front-end/HELP.md
 front-end/target/
+front-end/build/
 !front-end/.mvn/wrapper/maven-wrapper.jar
 !front-end/**/src/main/**/target/
 !front-end/**/src/test/**/target/
+!front-end/**/src/main/**/build/
+!front-end/**/src/test/**/build/
 
-### STS ###
-front-end/.apt_generated
+# IDE specific files
 front-end/.classpath
-front-end/.factorypath
 front-end/.project
 front-end/.settings
+front-end/.factorypath
+front-end/.apt_generated
 front-end/.springBeans
 front-end/.sts4-cache
+front-end/*.iml
+front-end/*.ipr
+front-end/*.iws
 
-### NetBeans ###
+# Build artifacts
+front-end/*.jar
+front-end/*.war
+front-end/*.ear
+
+# Test results
+front-end/test-output/
+front-end/surefire-reports/
+front-end/jacoco.exec
+
+# NetBeans project files
 front-end/nbproject/private/
 front-end/nbbuild/
 front-end/dist/
 front-end/nbdist/
 front-end/.nb-gradle/
-front-end/build/
-!front-end/**/src/main/**/build/
-!front-end/**/src/test/**/build/
-
-# Java Test & Build
-front-end/*.jar
-front-end/*.war
-front-end/*.ear
-front-end/test-output/
-front-end/surefire-reports/
-front-end/jacoco.exec
 
 
 # =================================================================
-# Python AI Model Rules (from ai-model-python/)
-# Python AI模型的忽略规则 (来自 ai-model-python/ 目录)
+# Python AI Model Rules (ai-model-python/)
 # =================================================================
 
-### Python Build & Cache ###
+# Environments
+ai-model-python/.env
+ai-model-python/.venv
+ai-model-python/env/
+ai-model-python/venv/
+ai-model-python/ENV/
+ai-model-python/env.bak/
+ai-model-python/venv.bak/
+ai-model-python/__pypackages__/
+
+# Python Build & Cache
 ai-model-python/__pycache__/
 ai-model-python/*.py[cod]
 ai-model-python/*$py.class
 ai-model-python/*.so
 ai-model-python/build/
-ai-model-python/develop-eggs/
 ai-model-python/dist/
 ai-model-python/downloads/
 ai-model-python/eggs/
@@ -67,49 +83,59 @@ ai-model-python/parts/
 ai-model-python/sdist/
 ai-model-python/var/
 ai-model-python/wheels/
-ai-model-python/share/python-wheels/
 ai-model-python/*.egg-info/
 ai-model-python/.installed.cfg
 ai-model-python/*.egg
+ai-model-python/.mypy_cache/
+ai-model-python/.ruff_cache/
+ai-model-python/.pytest_cache/
+ai-model-python/.cache
+ai-model-python/**/__pycache__/
+# Distribution / packaging
 ai-model-python/MANIFEST
+ai-model-python/*.manifest
+ai-model-python/*.spec
 
-### Unit Test / Coverage Reports ###
+# Installer logs
+ai-model-python/pip-log.txt
+ai-model-python/pip-delete-this-directory.txt
+
+# Unit test / coverage reports
 ai-model-python/htmlcov/
 ai-model-python/.tox/
 ai-model-python/.nox/
 ai-model-python/.coverage
 ai-model-python/.coverage.*
-ai-model-python/.cache
 ai-model-python/nosetests.xml
 ai-model-python/coverage.xml
 ai-model-python/*.cover
-ai-model-python/*.py,cover
-ai-model-python/.hypothesis/
-ai-model-python/.pytest_cache/
-ai-model-python/cover/
 
-### Environments & Data ###
-ai-model-python/.env
-ai-model-python/.venv
-ai-model-python/env/
-ai-model-python/venv/
-ai-model-python/ENV/
-ai-model-python/env.bak/
-ai-model-python/venv.bak/
-ai-model-python/checkpoints/
-ai-model-python/odir4/
-ai-model-python/logs/
+# Jupyter Notebook
+ai-model-python/.ipynb_checkpoints
+
+# Flask/Django specific
+ai-model-python/instance/
+ai-model-python/local_settings.py
+
+# Other tools
+ai-model-python/.pyre/
+ai-model-python/.pytype/
+
+
+
+# Data & Project specific outputs
+ai-model-python/checkpoints/*
+!ai-model-python/checkpoints/.gitkeep
+
+ai-model-python/logs/*
+!ai-model-python/logs/.gitkeep
+
+ai-model-python/data/odir4/*
+!ai-model-python/data/odir4/.gitkeep
+
+ai-model-python/data/odir4/misclassified/*
+
 ai-model-python/data.zip
 ai-model-python/reference/
 ai-model-python/misclassified_images.txt
-
-### Jupyter Notebook ###
-ai-model-python/.ipynb_checkpoints
-
-### mypy ###
-ai-model-python/.mypy_cache/
-ai-model-python/.dmypy.json
-ai-model-python/dmypy.json
-
-### Ruff ###
-ai-model-python/.ruff_cache/
+ai-model-python/db.sqlite3*
