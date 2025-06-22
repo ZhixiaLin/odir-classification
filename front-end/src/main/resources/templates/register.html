@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注册页面</title>
+  <style>
+    body {
+      background-color: rgb(255, 255, 255);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .main {
+      width: 800px;
+      height: 500px;
+      display: flex;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .home {
+      width: 50%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .home img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .home .dot-container {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+    }
+
+    .home .dot {
+      width: 10px;
+      height: 10px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      margin: 0 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .home .dot.active {
+      background-color: white;
+    }
+
+    .register-container {
+      width: 50%;
+      padding: 40px;
+      box-sizing: border-box;
+    }
+
+    .register-container h1 {
+      font-size: 24px;
+      color: black;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .shuru {
+      display: block;
+      width: 100%;
+      height: 45px;
+      border: 1px solid #e8e8e8;
+      margin-bottom: 15px;
+      padding-left: 40px;
+      box-sizing: border-box;
+    }
+
+    .shuru::placeholder {
+      font-size: 12px;
+      color: #bec4cb;
+    }
+
+    .denglu {
+      width: 100%;
+      height: 45px;
+      margin: 20px auto;
+      background-color: rgb(20, 185, 199);
+      color: black;
+      border: 1px solid rgb(20, 185, 199);
+      cursor: pointer;
+    }
+
+    .username {
+      background-image: url("img/denglu.png");
+      background-size: 20px 20px;
+      background-repeat: no-repeat;
+      background-position: 10px center;
+    }
+
+    .phonenumber {
+      background-image: url("img/phonenumber.png");
+      background-size: 20px 20px;
+      background-repeat: no-repeat;
+      background-position: 10px center;
+    }
+
+    .password {
+      background-image: url("img/denglumima.png");
+      background-size: 20px 20px;
+      background-repeat: no-repeat;
+      background-position: 10px center;
+    }
+
+    .register1 {
+      display: inline-block;
+      margin-left: 90px;
+      padding-left: 20px;
+      text-decoration: none;
+      text-align: center;
+      color: black;
+    }
+
+    .register1:hover {
+      color: rgb(20, 185, 199);
+    }
+
+    .forget-password {
+      display: inline-block;
+      text-decoration: none;
+      text-align: right;
+      color: black;
+    }
+
+    .forget-password:hover {
+      color: rgb(20, 185, 199);
+    }
+  </style>
+</head>
+<body>
+<div class="main">
+  <div class="home">
+    <img th:src="@{/img/885213.jpg}" class="active" alt="Image 1">
+    <img th:src="@{/img/885213.jpg}" alt="Image 2">
+    <img th:src="@{/img/885213.jpg}" alt="Image 3">
+    <div class="dot-container">
+      <div class="dot active" data-index="0"></div>
+      <div class="dot" data-index="1"></div>
+      <div class="dot" data-index="2"></div>
+    </div>
+  </div>
+  <div class="register-container">
+    <h1>用户注册</h1>
+    <form th:action="@{/register}" method="get">
+      <input class="shuru phonenumber" type="text" id="phonenumber" name="phonenumber" placeholder="电话号码">
+      <input class="shuru password" type="password" id="password" name="password" placeholder="密码">
+      <input class="shuru password" type="password" id="confirm_password" name="confirm_password" placeholder="确认密码">
+      <input class="denglu" type="submit" value="注册">
+      <a class="register1" th:href="@{/login}">已有账号 去登录</a>
+    </form>
+  </div>
+</div>
+
+<script>
+  const images = document.querySelectorAll('.home img');
+  const dots = document.querySelectorAll('.dot');
+  let currentIndex = 0;
+
+  function showImage(index) {
+    images.forEach((img, i) => {
+      img.style.opacity = i === index ? 1 : 0;
+    });
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+
+    currentIndex = index;
+  }
+
+  function nextImage() {
+    currentIndex = (currentIndex + 1) % images.length;
+    showImage(currentIndex);
+  }
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const index = parseInt(dot.getAttribute('data-index'));
+      showImage(index);
+    });
+  });
+
+  setInterval(nextImage, 6000);
+</script>
+</body>
+</html>

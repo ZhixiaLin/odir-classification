@@ -1,0 +1,895 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>批量眼科诊断报告</title>
+    <script src="js/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet">
+    <link href="css/default-theme.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/bootstrap-reset.css" rel="stylesheet">
+    <style>
+        /* 新增样式 */
+        .chart-container {
+            height: 250px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background: #f9f9f9;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            border-left: 4px solid #1890ff;
+            padding-left: 10px;
+        }
+
+        .summary-card {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .summary-label {
+            width: 120px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .summary-value {
+            flex: 1;
+        }
+
+        .severity-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .severity-low {
+            background-color: #52c41a;
+        }
+
+        .severity-medium {
+            background-color: #faad14;
+        }
+
+        .severity-high {
+            background-color: #f5222d;
+        }
+
+        .recommendation-card {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .recommendation-item {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .recommendation-item:before {
+            content: "•";
+            color: #1890ff;
+            font-size: 20px;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        .doctor-signature {
+            text-align: right;
+            margin-top: 30px;
+            font-style: italic;
+            color: #666;
+        }
+
+        /* 患者列表表格样式 */
+        .patient-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .patient-table th,
+        .patient-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .patient-table th {
+            background-color: #f5f7fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .patient-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .patient-table .highlight {
+            background-color: #f0f7ff;
+            font-weight: bold;
+        }
+
+        /* 批量诊断结果标签 */
+        .diagnosis-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .tag-cataract {
+            background-color: #e6f7ff;
+            color: #1890ff;
+            border: 1px solid #91d5ff;
+        }
+
+        .tag-glaucoma {
+            background-color: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+
+        .tag-dr {
+            background-color: #fff2e8;
+            color: #fa8c16;
+            border: 1px solid #ffd591;
+        }
+
+        .tag-amd {
+            background-color: #fff0f6;
+            color: #eb2f96;
+            border: 1px solid #ffadd2;
+        }
+
+        /* 打印样式 */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #report-content, #report-content * {
+                visibility: visible;
+            }
+            #report-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="sticky-header">
+<div class="header-section">
+    <div class="kouhao"><img src="img/logo1.png">智慧之眼</div>
+    <div class="pull-right userdt"><img src="img/img2.jpg">张医生</div>
+</div>
+<section>
+    <div class="sidebar-left">
+        <div class="sidebar-left-info">
+            <div class=" search-field"> </div>
+            <ul class="nav nav-pills nav-stacked side-navigation">
+                <li class="active">
+                    <a th:href="@{/dashboard}"><i class="fa fa-dashboard"></i> <span>控制台</span></a>
+                </li>
+                <li class="menu-list">
+                    <a href="">
+                        <i class="fa fa-wheelchair-alt"></i> <span>患者管理</span>
+                    </a>
+                    <ul class="child-list">
+                        <li><a th:href="@{/add-patient}">添加患者</a></li>
+                        <li><a th:href="@{/patient-list}">患者列表</a></li>
+                        <li><a th:href="@{/data-query}">数据查询</a></li>
+                    </ul>
+                </li>
+                <li class="menu-list">
+                    <a href="">
+                        <i class="fa fa-address-photo"></i> <span>图像管理</span>
+                    </a>
+                    <ul class="child-list">
+                        <li><a th:href="@{/fundus-image-history}">眼底图像历史记录</a></li>
+                    </ul>
+                </li>
+                <li class="menu-list">
+                    <a href="">
+                        <i class="fa fa-address-book"></i> <span>眼底图像诊断</span>
+                    </a>
+                    <ul class="child-list">
+                        <li><a th:href="@{/UploadDualEyeImages}">双眼图像上传与诊断</a></li>
+                        <li><a th:href="@{/eye-image-upload-single}">双眼图像上传与诊断-单批</a></li>
+                    </ul>
+                </li>
+                <li class="menu-list">
+                    <a href="">
+                        <i class="fa fa-user-md"></i> <span>医生管理</span>
+                    </a>
+                    <ul class="child-list">
+                        <li><a th:href="@{/add-doctor}">添加医生</a></li>
+                        <li><a th:href="@{/doctor-list}">医生列表</a></li>
+                    </ul>
+                </li>
+                <li class="menu-list">
+                    <a href="javascript:;">
+                        <i class="fa fa-pie-chart"></i> <span>统计管理</span>
+                    </a>
+                    <ul class="child-list">
+                        <li><a th:href="@{/statistics}">统计管理</a></li>
+                    </ul>
+                </li>
+                <li class="menu-list">
+                    <a href="">
+                        <i class="fa fa-cog"></i> <span>系统设置</span>
+                    </a>
+                    <ul class="child-list">
+                        <li><a th:href="@{/change-password}">修改密码</a></li>
+                        <li><a th:href="@{/system-help}">系统使用说明</a></li>
+                        <li><a th:href="@{/personal-info}">个人信息</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="body-content">
+        <div class="page-head clearfix">
+            <ol class="breadcrumb pull-left">
+                <li><a href="#"><i class="fa fa-address-photo"></i> 眼底图像诊断</a></li>
+                <li><a href="#"> 批量图像审查</a></li>
+                <li class="active">批量诊断报告</li>
+            </ol>
+            <div class="pull-right breadcrumbtn">
+                <button class="btn btn-primary" id="print-btn"><i class="fa fa-print"></i> 打印报告</button>
+                <button class="btn btn-success" id="export-btn"><i class="fa fa-download"></i> 导出PDF</button>
+            </div>
+        </div>
+        <div class="wrapper">
+            <ul class="row row2">
+                <li class="col-xs-12">
+                    <section class="panel boy" id="report-content">
+                        <header class="panel-heading head-border head_blue">批量眼科诊断评估报告</header>
+                        <div class="panel-body">
+                            <div class="summary-card">
+                                <h4><i class="fa fa-bar-chart"></i> 批量诊断概览</h4>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="summary-item">
+                                            <div class="summary-label">患者数量：</div>
+                                            <div class="summary-value">8 人</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="summary-item">
+                                            <div class="summary-label">检查日期：</div>
+                                            <div class="summary-value">2025-05-10 至 2025-05-15</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="summary-item">
+                                            <div class="summary-label">平均年龄：</div>
+                                            <div class="summary-value">42.5 岁</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="summary-item">
+                                            <div class="summary-label">异常率：</div>
+                                            <div class="summary-value">87.5%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4><i class="fa fa-users"></i> 患者列表与诊断结果</h4>
+                            <table class="patient-table">
+                                <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>姓名</th>
+                                    <th>性别</th>
+                                    <th>年龄</th>
+                                    <th>病历号</th>
+                                    <th>检查日期</th>
+                                    <th>诊断结果</th>
+                                    <th>风险等级</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>任我行</td>
+                                    <td>男</td>
+                                    <td>34</td>
+                                    <td>PT20230045</td>
+                                    <td>2025-05-15</td>
+                                    <td>
+                                        <span class="diagnosis-tag tag-cataract">白内障(中度)</span>
+                                        <span class="diagnosis-tag tag-glaucoma">青光眼(轻度)</span>
+                                    </td>
+                                    <td><span class="severity-indicator severity-high"></span> 高</td>
+                                </tr>
+                                <tr class="highlight">
+                                    <td>2</td>
+                                    <td>付鹏</td>
+                                    <td>男</td>
+                                    <td>28</td>
+                                    <td>PT20230046</td>
+                                    <td>2025-05-14</td>
+                                    <td>
+                                        <span class="diagnosis-tag tag-dr">糖尿病视网膜病变(早期)</span>
+                                    </td>
+                                    <td><span class="severity-indicator severity-medium"></span> 中</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>岳灵珊</td>
+                                    <td>女</td>
+                                    <td>25</td>
+                                    <td>PT20230047</td>
+                                    <td>2025-05-14</td>
+                                    <td>
+                                        <span class="diagnosis-tag tag-cataract">白内障(轻度)</span>
+                                    </td>
+                                    <td><span class="severity-indicator severity-low"></span> 低</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>林平之</td>
+                                    <td>男</td>
+                                    <td>26</td>
+                                    <td>PT20230048</td>
+                                    <td>2025-05-13</td>
+                                    <td>
+                                        <span class="diagnosis-tag tag-amd">年龄相关性黄斑变性</span>
+                                    </td>
+                                    <td><span class="severity-indicator severity-high"></span> 高</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>张丽</td>
+                                    <td>女</td>
+                                    <td>38</td>
+                                    <td>PT20230049</td>
+                                    <td>2025-05-12</td>
+                                    <td>
+                                        <span class="diagnosis-tag tag-glaucoma">青光眼(中度)</span>
+                                    </td>
+                                    <td><span class="severity-indicator severity-high"></span> 高</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>任盈盈</td>
+                                    <td>女</td>
+                                    <td>22</td>
+                                    <td>PT20230050</td>
+                                    <td>2025-05-11</td>
+                                    <td>
+                                        <span class="diagnosis-tag tag-cataract">白内障(早期)</span>
+                                    </td>
+                                    <td><span class="severity-indicator severity-low"></span> 低</td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>向问天</td>
+                                    <td>男</td>
+                                    <td>45</td>
+                                    <td>PT20230051</td>
+                                    <td>2025-05-11</td>
+                                    <td>
+                                        <span class="diagnosis-tag tag-dr">糖尿病视网膜病变(中度)</span>
+                                    </td>
+                                    <td><span class="severity-indicator severity-medium"></span> 中</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>仪琳</td>
+                                    <td>女</td>
+                                    <td>20</td>
+                                    <td>PT20230052</td>
+                                    <td>2025-05-10</td>
+                                    <td>
+                                        未见明显异常
+                                    </td>
+                                    <td><span class="severity-indicator severity-low"></span> 低</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="chartsbox">
+                                <ul class="row">
+                                    <li class="col-xs-6">
+                                        <div class="chart-container">
+                                            <div class="chart-title">疾病类型分布</div>
+                                            <div class="chartnav" id="chart1"></div>
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-6">
+                                        <div class="chart-container">
+                                            <div class="chart-title">风险等级分布</div>
+                                            <div class="chartnav" id="chart2"></div>
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-6">
+                                        <div class="chart-container">
+                                            <div class="chart-title">年龄与疾病关系</div>
+                                            <div class="chartnav" id="chart3"></div>
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-6">
+                                        <div class="chart-container">
+                                            <div class="chart-title">性别与疾病关系</div>
+                                            <div class="chartnav" id="chart4"></div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="recommendation-card">
+                                <h4><i class="fa fa-lightbulb-o"></i> 群体健康建议</h4>
+                                <div class="recommendation-item">对高风险的3名患者(任我行、林平之、东方不败)建议进行专科会诊和进一步检查</div>
+                                <div class="recommendation-item">对中度风险的2名患者(令狐冲、向问天)建议3个月内复查并加强随访</div>
+                                <div class="recommendation-item">对低风险的3名患者(岳灵珊、任盈盈、仪琳)建议常规年度眼科检查</div>
+                                <div class="recommendation-item">针对本批患者中白内障高发情况(3/8)，建议开展白内障防治知识宣教</div>
+                                <div class="recommendation-item">针对年轻患者(20-30岁)中出现的早期病变，建议加强用眼卫生教育</div>
+                            </div>
+
+                            <div class="doctor-signature">
+                                <p>审核医生：张医生（副主任医师）</p>
+                                <p>报告日期：2025-05-16</p>
+                            </div>
+                        </div>
+                    </section>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<script src="js/bootstrap.js"></script>
+<script src="js/echarts.min.js"></script>
+<script src="js/scripts.js"></script>
+<script src="laydate/laydate.js"></script>
+<script>
+    $(function () {
+        // 初始化所有图表
+        initDiseaseDistributionChart();
+        initRiskDistributionChart();
+        initAgeDiseaseChart();
+        initGenderDiseaseChart();
+
+        // 打印功能
+        document.getElementById('print-btn').addEventListener('click', function() {
+            window.print();
+        });
+
+        // 导出PDF功能
+        document.getElementById('export-btn').addEventListener('click', function() {
+            exportToPDF();
+        });
+
+        function exportToPDF() {
+            // 显示加载中提示
+            const loading = layer.msg('正在生成PDF...', {icon: 16, shade: 0.3, time: 0});
+
+            // 获取报告内容元素
+            const element = document.getElementById('report-content');
+
+            // 设置选项
+            const options = {
+                scale: 2, // 提高导出质量
+                useCORS: true, // 允许跨域图片
+                allowTaint: true, // 允许污染图片
+                logging: false, // 关闭日志
+                backgroundColor: '#fff' // 设置背景色为白色
+            };
+
+            // 使用html2canvas生成canvas
+            html2canvas(element, options).then(canvas => {
+                // 计算PDF尺寸
+                const imgWidth = 210; // A4宽度(mm)
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+
+                // 初始化PDF
+                const pdf = new jsPDF('p', 'mm', 'a4');
+
+                // 添加图片到PDF
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, imgHeight);
+
+                // 保存PDF文件
+                pdf.save('批量眼科诊断报告_' + new Date().toLocaleDateString() + '.pdf');
+
+                // 关闭加载提示
+                layer.close(loading);
+            }).catch(err => {
+                console.error('导出PDF失败:', err);
+                layer.close(loading);
+                layer.msg('导出PDF失败，请重试', {icon: 2});
+            });
+        }
+
+        function initDiseaseDistributionChart() {
+            var chart = echarts.init(document.getElementById('chart1'));
+            var option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    data: ['白内障', '青光眼', '糖尿病视网膜病变', '年龄相关性黄斑变性', '正常']
+                },
+                series: [
+                    {
+                        name: '疾病类型分布',
+                        type: 'pie',
+                        radius: ['50%', '70%'],
+                        avoidLabelOverlap: false,
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: '18',
+                                fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: [
+                            { value: 3, name: '白内障', itemStyle: { color: '#1890ff' } },
+                            { value: 2, name: '青光眼', itemStyle: { color: '#52c41a' } },
+                            { value: 2, name: '糖尿病视网膜病变', itemStyle: { color: '#fa8c16' } },
+                            { value: 1, name: '年龄相关性黄斑变性', itemStyle: { color: '#eb2f96' } },
+                            { value: 1, name: '正常', itemStyle: { color: '#d9d9d9' } }
+                        ]
+                    }
+                ]
+            };
+            chart.setOption(option);
+            window.addEventListener("resize", function() {
+                chart.resize();
+            });
+        }
+
+        function initRiskDistributionChart() {
+            var chart = echarts.init(document.getElementById('chart2'));
+            var option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#999'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            type: 'dashed'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: ['高风险', '中风险', '低风险'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: '患者数量',
+                        type: 'bar',
+                        data: [
+                            {
+                                value: 3,
+                                itemStyle: {
+                                    color: '#f5222d'
+                                }
+                            },
+                            {
+                                value: 2,
+                                itemStyle: {
+                                    color: '#faad14'
+                                }
+                            },
+                            {
+                                value: 3,
+                                itemStyle: {
+                                    color: '#52c41a'
+                                }
+                            }
+                        ],
+                        label: {
+                            show: true,
+                            position: 'right'
+                        }
+                    }
+                ]
+            };
+            chart.setOption(option);
+            window.addEventListener("resize", function() {
+                chart.resize();
+            });
+        }
+
+        function initAgeDiseaseChart() {
+            var chart = echarts.init(document.getElementById('chart3'));
+            var option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
+                        }
+                    }
+                },
+                legend: {
+                    data: ['白内障', '青光眼', '糖尿病视网膜病变', '黄斑变性']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['20-30岁', '30-40岁', '40-50岁'],
+                        axisLine: {
+                            lineStyle: {
+                                color: '#999'
+                            }
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        axisLine: {
+                            lineStyle: {
+                                color: '#999'
+                            }
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                type: 'dashed'
+                            }
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: '白内障',
+                        type: 'line',
+                        stack: '总量',
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(24, 144, 255, 0.5)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(24, 144, 255, 0.1)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [2, 1, 0],
+                        itemStyle: {
+                            color: '#1890ff'
+                        }
+                    },
+                    {
+                        name: '青光眼',
+                        type: 'line',
+                        stack: '总量',
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(82, 196, 26, 0.5)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(82, 196, 26, 0.1)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [0, 1, 1],
+                        itemStyle: {
+                            color: '#52c41a'
+                        }
+                    },
+                    {
+                        name: '糖尿病视网膜病变',
+                        type: 'line',
+                        stack: '总量',
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(250, 140, 22, 0.5)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(250, 140, 22, 0.1)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [1, 0, 1],
+                        itemStyle: {
+                            color: '#fa8c16'
+                        }
+                    },
+                    {
+                        name: '黄斑变性',
+                        type: 'line',
+                        stack: '总量',
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(235, 47, 150, 0.5)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(235, 47, 150, 0.1)'
+                                }
+                            ])
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [0, 1, 0],
+                        itemStyle: {
+                            color: '#eb2f96'
+                        }
+                    }
+                ]
+            };
+            chart.setOption(option);
+            window.addEventListener("resize", function() {
+                chart.resize();
+            });
+        }
+
+        function initGenderDiseaseChart() {
+            var chart = echarts.init(document.getElementById('chart4'));
+            var option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['男性', '女性']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#999'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            type: 'dashed'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: ['白内障', '青光眼', '糖尿病视网膜病变', '黄斑变性'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: '男性',
+                        type: 'bar',
+                        stack: 'total',
+                        label: {
+                            show: true
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [1, 1, 1, 1],
+                        itemStyle: {
+                            color: '#1890ff'
+                        }
+                    },
+                    {
+                        name: '女性',
+                        type: 'bar',
+                        stack: 'total',
+                        label: {
+                            show: true
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [2, 1, 1, 0],
+                        itemStyle: {
+                            color: '#eb2f96'
+                        }
+                    }
+                ]
+            };
+            chart.setOption(option);
+            window.addEventListener("resize", function() {
+                chart.resize();
+            });
+        }
+    });
+</script>
+</body>
+
+</html>

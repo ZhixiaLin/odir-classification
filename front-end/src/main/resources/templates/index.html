@@ -1,0 +1,473 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>智慧之眼主页</title>
+    <script src="js/jquery.js"></script>
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet">
+    <link href="css/default-theme.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/bootstrap-reset.css" rel="stylesheet">
+</head>
+<link href="/css/style.css" rel="stylesheet">
+<script src="/js/jquery.js"></script>
+<body class="sticky-header">
+<div class="header-section">
+    <div class="kouhao"><img src="img/logo1.png">智慧之眼</div>
+    <div class="pull-right userdt"><img src="img/img2.jpg">医生</div>
+</div>
+    <section>
+        <div class="sidebar-left">
+            <div class="sidebar-left-info">
+                <div class=" search-field"> </div>
+                <ul class="nav nav-pills nav-stacked side-navigation">
+                    <li class="active">
+                        <a th:href="@{/dashboard}"><i class="fa fa-dashboard"></i> <span>控制台</span></a>
+                    </li>
+                    <li class="menu-list">
+                        <a href="">
+                            <i class="fa fa-wheelchair-alt"></i> <span>患者管理</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/add-patient}">添加患者</a></li>
+                            <li><a th:href="@{/patient-list}">患者列表</a></li>
+                            <li><a th:href="@{/data-query}">数据查询</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href="">
+                            <i class="fa fa-address-photo"></i> <span>图像管理</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/fundus-image-history}">眼底图像历史记录</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href="">
+                            <i class="fa fa-address-book"></i> <span>眼底图像诊断</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/UploadDualEyeImages}">双眼图像上传与诊断</a></li>
+                            <li><a th:href="@{/eye-image-upload-single}">双眼图像上传与诊断-单批</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href="">
+                            <i class="fa fa-user-md"></i> <span>医生管理</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/add-doctor}">添加医生</a></li>
+                            <li><a th:href="@{/doctor-list}">医生列表</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href="javascript:;">
+                            <i class="fa fa-pie-chart"></i> <span>统计管理</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/statistics}">统计管理</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href="">
+                            <i class="fa fa-cog"></i> <span>系统设置</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/change-password}">修改密码</a></li>
+                            <li><a th:href="@{/system-help}">系统使用说明</a></li>
+                            <li><a th:href="@{/personal-info}">个人信息</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="body-content">
+
+            <div class="page-head clearfix">
+                <ol class="breadcrumb pull-left">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> 控制台</a></li>
+                    <li class="active">首页</li>
+                </ol>
+                <div class="pull-right breadcrumbtn">
+
+                </div>
+            </div>
+            <div class="wrapper">
+                <div class="row row2 state-overview">
+                    <li>
+                        <a href="add-patient.html" class="panel purple cenbox">
+                            <div class="text-center">
+                                <i class="fa fa-plus-square"></i>
+                                <p>今日门诊人数</p>
+                            </div>
+
+                        </a>
+                    </li>
+                    <li>
+                        <section class="panel purple">
+                            <div class="symbol yellow-color">
+                                <i class="fa fa-stethoscope"></i>
+                            </div>
+                            <div class="value gray ">
+                                <h1 class="timer yellow-color" data-from="0" data-to="320" data-speed="1000">320</h1>
+                                <p>今日门诊人数</p>
+                            </div>
+                        </section>
+                    </li>
+                    <li>
+                        <section class="panel ">
+                            <div class="symbol purple-color">
+                                <i class="fa fa-file-text"></i>
+                            </div>
+                            <div class="value gray">
+                                <h1 class="purple-color timer" data-from="0" data-to="123" data-speed="1000">123</h1>
+                                <p>今日建档患者</p>
+                            </div>
+                        </section>
+                    </li>
+                    <li>
+                        <section class="panel green">
+                            <div class="symbol blue-color">
+                                <i class="fa fa-users"></i>
+                            </div>
+                            <div class="value gray">
+                                <h1 class="timer blue-color" data-from="0" data-to="432" data-speed="1000">432</h1>
+                                <p>患者总数</p>
+                            </div>
+                        </section>
+                    </li>
+                    <li>
+                        <section class="panel">
+                            <div class="symbol green-color">
+                                <i class="fa fa-unlink"></i>
+                            </div>
+                            <div class="value gray">
+                                <h1 class="green-color timer" data-from="0" data-to="2345" data-speed="3000">2345</h1>
+                                <p>今日失访人数</p>
+                            </div>
+                        </section>
+                    </li>
+                </div>
+
+                <div class="row row2">
+                    <li class="col-xs-9">
+                        <section class="panel">
+                            <header class="panel-heading head-border">常见眼部疾病列表 </header>
+                            <div class="panel-body">
+                                <ul class="row row2 ">
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">高血压队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/gaoxueya.png"></div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：高血压</p>
+                                                    <p><span>描述</span>：<b>高血压性视网膜病变（中度）</b><br>中度高血压性视网膜病变的特征是变薄、直的动脉、视网膜内出血和黄色硬性渗出物。
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">高血压队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/gaoxueyatongxian.png">
+                                                </div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：高血压</p>
+                                                    <p><span>描述</span>：<b>高血压性视网膜病变（铜线）</b><br>由于高血压动脉硬化引起的小动脉壁（铜线）增厚和混浊导致视网膜小动脉变窄。
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">高血压队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/gaoxueyashuizhong.png">
+                                                </div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：高血压</p>
+                                                    <p><span>描述</span>：<b>高血压性视网膜病变（星状渗出液和视乳头水肿）</b><br>恶性高血压的主要眼底镜特征是视盘肿胀，表现为视盘边缘模糊和抬高。该图像还显示了由视网膜血管渗漏引起的特征性星形黄斑病变。
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">青光眼队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/qingguangyanzhongdu.png">
+                                                </div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：青光眼</p>
+                                                    <p><span>描述</span>：<b>青光眼（中度）</b><br>
+                                                        右眼中度青光眼显示伴随杯盘比增大的视网膜神经边缘变薄，杯的纵向增大（青光眼杯），盘沿的凹陷或切迹，以及反映视网膜神经纤维层损害的楔形暗区。
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">青光眼队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/qingguangyanwanqi.png">
+                                                </div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：青光眼</p>
+                                                    <p><span>描述</span>：<b>青光眼（晚期）</b><br>
+                                                        晚期青光眼的体征，包括明显的杯盘比增大（完全凹陷）和类似盘沿的视盘周围萎缩。
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">青光眼队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img
+                                                        src="img/qingguangyanshipanchuxue.png">
+                                                </div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：青光眼</p>
+                                                    <p><span>描述</span>：<b>青光眼（视盘出血）</b><br>
+                                                        这张照片显示大约4点钟位置穿过视盘边缘的Drance（碎片）出血。
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">白内障队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/baineizhang.png"></div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：白内障</p>
+                                                    <p><span>描述</span>：<b>白内障</b><br>白内障是深色虹膜后面的淡蓝色不透明团块。</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">AMD队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/AMDzhongji.png"></div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：AMD</p>
+                                                    <p><span>描述</span>：<b>年龄相关性黄斑变性（干，中级）</b><br>
+                                                        视网膜色素上皮的色素变化（细小的深棕色斑点）和广泛的玻璃疣（较大的黄色斑点）是中度干性 AMD 的典型特征。</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">AMD队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/AMDzhongji.png"></div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：AMD</p>
+                                                    <p><span>描述</span>：<b>年龄相关性黄斑变性（干性、高级）</b><br>
+                                                        随着时间的推移，一些眼睛会出现视网膜色素上皮和光感受器的中央萎缩。这会导致严重的中央视力丧失，这是晚期 AMD 的特征。</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">AMD队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/AMDzhongji.png"></div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：AMD</p>
+                                                    <p><span>描述</span>：<b>年龄相关性黄斑变性（shi'xing）</b><br>
+                                                        受湿性 AMD
+                                                        影响的视网膜照片。该图像显示了钙化玻璃疣、视网膜下出血、脉络膜新生血管膜（旧血和纤维化导致的黑色）和黄斑中的叶黄素色素。</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">糖尿病队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img
+                                                        src="img/tangniaobingfeizengzhi.png"></div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：糖尿病</p>
+                                                    <p><span>描述</span>：<b>糖尿病视网膜病变（非增殖性）</b><br>
+                                                        非增殖性糖尿病视网膜病变的眼底镜特征包括视网膜出血和硬性渗出物（黄色斑块）。</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">糖尿病队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img
+                                                        src="img/tangniaobingfeizengzhi.png"></div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：糖尿病</p>
+                                                    <p><span>描述</span>：<b>糖尿病视网膜病变（增殖性）</b><br>
+                                                        增殖性糖尿病视网膜病变的关键眼底镜特征是新血管形成，可见于视盘周围。</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">近视队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/jinshiA.png"></div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：近视</p>
+                                                    <p><span>描述</span>：<b>屈光不正</b><br>
+                                                        正视</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">近视队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/jinshiB.png"></div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：近视</p>
+                                                    <p><span>描述</span>：<b>屈光不正</b><br>
+                                                        近视</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">近视队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/jinshiC.png"></div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：近视</p>
+                                                    <p><span>描述</span>：<b>屈光不正</b><br>
+                                                        远视</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <div class="babynav">
+                                            <div class="clearfix bobybm">
+                                                <p class="pull-left">12355</p><span class="pull-right">近视队列</span>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="pull-left babyimg"><img src="img/jinshiD.png"></div>
+                                                <div class="pull-left babyinfo">
+                                                    <p><span>种类</span>：近视</p>
+                                                    <p><span>描述</span>：<b>屈光不正</b><br>
+                                                        散光</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+
+
+
+                                </ul>
+                            </div>
+                        </section>
+                    </li>
+                    <li class="col-xs-3">
+                        <section class="panel">
+                            <header class="panel-heading head-border">今日门诊记录</header>
+                            <div class="panel-body">
+                                <ul class="mzjl">
+                                    <li><span>佩德罗</span><span>12:49</span></li>
+                                    <li><span>佩琦 </span><span>12:49</span></li>
+                                    <li><span>乔志</span><span>12:49</span></li>
+                                    <li><span>李查德</span><span>12:49</span></li>
+                                    <li><span>亚历山大 </span><span>12:49</span></li>
+                                    <li><span>苏西</span><span>12:49</span></li>
+                                    <li><span>丹尼</span><span>12:49</span></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </li>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script src="js/bootstrap.js"></script>
+    <script src="js/echarts.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="laydate/laydate.js"></script>
+    <script>
+        lay('#version').html('-v' + laydate.v);
+        laydate.render({
+            elem: '#test1'
+            , range: true
+            , theme: '#1890ff'
+        });
+    </script>
+
+
+</body>
+
+</html>

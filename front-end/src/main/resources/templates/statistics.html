@@ -1,0 +1,976 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>统计管理</title>
+  <script src="js/jquery.js"></script>
+  <link href="css/font-awesome.css" rel="stylesheet">
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/style-responsive.css" rel="stylesheet">
+  <link href="css/default-theme.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/bootstrap-reset.css" rel="stylesheet">
+  <script src="css/apexcharts.js"></script>
+  <script src="js/jquery.js"></script>
+  <script src="js/bootstrap.js"></script>
+  <link href="css/font-awesome.css" rel="stylesheet">
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/style-responsive.css" rel="stylesheet">
+  <link href="css/default-theme.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/bootstrap-reset.css" rel="stylesheet">
+  <style>
+    .file2 {
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .file2 img {
+      max-width: 100%;
+      max-height: 300px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .file2 input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file2 span {
+      display: block;
+      margin-top: 10px;
+      color: #888;
+    }
+
+    /* 底部按钮区域 */
+    .processing-buttons {
+      position: fixed;
+      bottom: 0;
+      left: 200px;
+      /* 左侧导航栏宽度 */
+      right: 0;
+      height: 125px;
+      background-color: #fff;
+      /* 背景颜色与 col-xs-12 一致 */
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+      /* 内边距与 col-xs-12 一致 */
+      margin-left: 15px;
+      /* 与 col-xs-12 的左边距一致 */
+      margin-right: 15px;
+      /* 与 col-xs-12 的右边距一致 */
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      /* 阴影效果与 col-xs-12 一致 */
+    }
+
+    .processing-buttons button {
+      margin: 0 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .processing-buttons button:hover {
+      background-color: #f1f1f1;
+    }
+
+    .processing-buttons button.btn-primary {
+      background-color: #13b4ca;
+      color: #fff;
+      border-color: #13b4ca;
+    }
+
+    .processing-buttons button.btn-primary:hover {
+      background-color: #118b9b;
+      border-color: #118b9b;
+    }
+
+    .processing-buttons button.btn-success {
+      background-color: #5cc691;
+      color: #fff;
+      border-color: #5cc691;
+    }
+
+    .processing-buttons button.btn-success:hover {
+      background-color: #43936b;
+      border-color: #43936b;
+    }
+
+    .processing-buttons button.btn-info {
+      background-color: #17a2b8;
+      color: #fff;
+      border-color: #17a2b8;
+    }
+
+    .processing-buttons button.btn-info:hover {
+      background-color: #138496;
+      border-color: #117a8b;
+    }
+
+    /* 左侧导航栏宽度 */
+    .sidebar-left {
+      width: 200px;
+      position: fixed;
+      top: 60px;
+      /* 头部高度 */
+      bottom: 0;
+      left: 0;
+      background-color: #2a3f54;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    /* 主体内容区域 */
+    .body-content {
+      margin-left: 200px;
+      /* 左侧导航栏宽度 */
+      padding-bottom: 125px;
+      /* 底部按钮区域高度 */
+    }
+
+    /* 新增样式 */
+    .chart-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .chart-box {
+      width: 48%;
+      margin-bottom: 20px;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+    }
+
+    .analysis-section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 5px;
+      margin-top: 30px;
+      border-left: 4px solid #13b4ca;
+    }
+
+    .analysis-section h3 {
+      color: #2a3f54;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .analysis-section p {
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* 新增时间条样式 */
+    .timeline-decoration {
+      margin-top: 20px;
+      height: 4px;
+      background: linear-gradient(90deg, #13b4ca, #5cc691, #17a2b8, #e74c3c, #2a3f54, #EB8C87, #9b59b6);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-decoration::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.8) 50%,
+      rgba(255,255,255,0) 100%);
+      animation: shine 3s infinite;
+    }
+
+    .timeline-years {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    /* 新增筛选器样式 */
+    .filter-container {
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+
+    .filter-title {
+      font-weight: bold;
+      margin-right: 15px;
+      line-height: 30px;
+      min-width: 60px;
+    }
+
+    .filter-item {
+      margin-right: 15px;
+      margin-bottom: 5px;
+    }
+
+    .filter-item label {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    .filter-select {
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      min-width: 100px;
+    }
+
+    .filter-select-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .filter-select-separator {
+      margin: 0 10px;
+    }
+
+    .filter-button {
+      padding: 5px 15px;
+      background-color: #13b4ca;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .filter-button:hover {
+      background-color: #118b9b;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @media (max-width: 768px) {
+      .chart-box {
+        width: 100%;
+      }
+      .filter-group {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .filter-select-container {
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<link href="/css/style.css" rel="stylesheet">
+<script src="/js/jquery.js"></script>
+<body class="sticky-header">
+<div class="header-section">
+  <div class="header-section">
+    <div class="kouhao"><img src="img/logo1.png">智慧之眼</div>
+    <div class="pull-right userdt"><img src="img/img2.jpg">医生</div>
+  </div>
+</div>
+<section>
+  <div class="sidebar-left">
+    <div class="sidebar-left-info">
+      <div class=" search-field"> </div>
+      <ul class="nav nav-pills nav-stacked side-navigation">
+        <li class="active">
+          <a th:href="@{/dashboard}"><i class="fa fa-dashboard"></i> <span>控制台</span></a>
+        </li>
+        <li class="menu-list">
+          <a href="">
+            <i class="fa fa-wheelchair-alt"></i> <span>患者管理</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/add-patient}">添加患者</a></li>
+            <li><a th:href="@{/patient-list}">患者列表</a></li>
+            <li><a th:href="@{/data-query}">数据查询</a></li>
+          </ul>
+        </li>
+        <li class="menu-list">
+          <a href="">
+            <i class="fa fa-address-photo"></i> <span>图像管理</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/fundus-image-history}">眼底图像历史记录</a></li>
+          </ul>
+        </li>
+        <li class="menu-list">
+          <a href="">
+            <i class="fa fa-address-book"></i> <span>眼底图像诊断</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/UploadDualEyeImages}">双眼图像上传与诊断</a></li>
+            <li><a th:href="@{/eye-image-upload-single}">双眼图像上传与诊断-单批</a></li>
+          </ul>
+        </li>
+        <li class="menu-list">
+          <a href="">
+            <i class="fa fa-user-md"></i> <span>医生管理</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/add-doctor}">添加医生</a></li>
+            <li><a th:href="@{/doctor-list}">医生列表</a></li>
+          </ul>
+        </li>
+        <li class="menu-list">
+          <a href="javascript:;">
+            <i class="fa fa-pie-chart"></i> <span>统计管理</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/statistics}">统计管理</a></li>
+          </ul>
+        </li>
+        <li class="menu-list">
+          <a href="">
+            <i class="fa fa-cog"></i> <span>系统设置</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/change-password}">修改密码</a></li>
+            <li><a th:href="@{/system-help}">系统使用说明</a></li>
+            <li><a th:href="@{/personal-info}">个人信息</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="body-content">
+
+    <div class="page-head clearfix">
+      <ol class="breadcrumb pull-left">
+        <li><a href="#"><i class="fa fa-pie-chart"></i> 统计管理</a></li>
+        <li class="active">统计管理</li>
+      </ol>
+      <div class="pull-right breadcrumbtn">
+
+      </div>
+    </div>
+    <div class="wrapper">
+      <!-- 图表区域 -->
+      <div class="row row2">
+        <div class="col-xs-12">
+          <!-- 新增筛选器 -->
+          <div class="filter-container">
+            <div class="filter-group">
+              <div class="filter-title">时间范围:</div>
+              <div class="filter-select-container">
+                <select id="startYear" class="filter-select">
+                  <option value="2016">2016</option>
+                  <option value="2017">2017</option>
+                  <option value="2018">2018</option>
+                  <option value="2019">2019</option>
+                  <option value="2020">2020</option>
+                  <option value="2021">2021</option>
+                  <option value="2022">2022</option>
+                  <option value="2023" selected>2023</option>
+                </select>
+                <span class="filter-select-separator">至</span>
+                <select id="endYear" class="filter-select">
+                  <option value="2016">2016</option>
+                  <option value="2017">2017</option>
+                  <option value="2018">2018</option>
+                  <option value="2019">2019</option>
+                  <option value="2020">2020</option>
+                  <option value="2021">2021</option>
+                  <option value="2022">2022</option>
+                  <option value="2023" selected>2023</option>
+                </select>
+                <button id="applyYearFilter" class="filter-button">应用</button>
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <div class="filter-title">性别:</div>
+              <div class="filter-item">
+                <input type="checkbox" id="genderAll" checked>
+                <label for="genderAll">全部</label>
+              </div>
+              <div class="filter-item">
+                <input type="checkbox" id="genderMale">
+                <label for="genderMale">男性</label>
+              </div>
+              <div class="filter-item">
+                <input type="checkbox" id="genderFemale">
+                <label for="genderFemale">女性</label>
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <div class="filter-title">年龄范围:</div>
+              <div class="filter-select-container">
+                <select id="startAge" class="filter-select">
+                  <option value="0">0岁</option>
+                  <option value="18">18岁</option>
+                  <option value="40">40岁</option>
+                  <option value="60">60岁</option>
+                </select>
+                <span class="filter-select-separator">至</span>
+                <select id="endAge" class="filter-select">
+                  <option value="18">18岁</option>
+                  <option value="40">40岁</option>
+                  <option value="60">60岁</option>
+                  <option value="100" selected>100岁</option>
+                </select>
+                <button id="applyAgeFilter" class="filter-button">应用</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <div class="chart-box">
+              <h3>年度眼疾患病人数统计</h3>
+              <div id="chart" style="max-width: 100%; margin: 20px auto;"></div>
+              <!-- 新增的时间条装饰 -->
+              <div class="timeline-decoration"></div>
+              <div class="timeline-years">
+                <span>2016</span>
+                <span>2017</span>
+                <span>2018</span>
+                <span>2019</span>
+                <span>2020</span>
+                <span>2021</span>
+                <span>2022</span>
+                <span>2023</span>
+              </div>
+            </div>
+            <div class="chart-box">
+              <h3>疾病分布比例</h3>
+              <div id="pieChart" style="max-width: 100%; margin: 20px auto;"></div>
+            </div>
+          </div>
+
+          <!-- 分析说明区域 -->
+          <div class="analysis-section">
+            <h3><i class="fa fa-bar-chart"></i> 年度眼疾患病人数分析</h3>
+            <p>本图表展示了2016年至2023年间我院接诊的眼疾患者数量变化情况。从图中可以看出，眼疾患者数量呈现持续增长趋势，特别是在2020年增长最为显著，达到8133人次，该年度数据以特殊颜色标注。2020年后患者数量虽有波动，但仍保持在较高水平。
+            </p>
+            <p>2020年的显著增长可能与以下因素有关：1) COVID-19疫情期间电子设备使用时间大幅增加导致视疲劳和干眼症患者增多；2)
+              糖尿病等慢性病患者增加导致相关视网膜病变发病率上升；3) 我院在2020年引进了新的眼底检查设备，提高了诊断准确率。</p>
+            <p>2021年后的患者数量波动可能与疫情防控政策调整有关，建议加强远程医疗服务和健康宣教，提高公众对眼健康的重视程度。</p>
+          </div>
+
+          <div class="analysis-section" style="border-left-color: #5cc691;">
+            <h3><i class="fa fa-pie-chart"></i> 疾病分布分析与防治建议</h3>
+            <p>本饼图展示了眼科疾病在患者中的最新分布比例。近视问题占比最高，达到26%，这与现代生活方式和电子设备使用时间增加密切相关。其次是糖尿病视网膜病变(25%)和青光眼(18%)。
+            </p>
+            <p>基于此最新数据，我们建议：</p>
+            <ol>
+              <li>加强青少年近视防控工作，推广"20-20-20"用眼法则（每20分钟看20英尺外20秒）</li>
+              <li>糖尿病患者眼部并发症筛查频率提高至每半年一次</li>
+              <li>针对40岁以上人群开展青光眼早期筛查项目</li>
+              <li>增加对高血压患者的眼底检查，预防高血压性视网膜病变</li>
+              <li>优化医疗资源配置，针对高发疾病增加专科医生数量</li>
+            </ol>
+            <p>特别值得注意的是，近视问题已超越传统眼病成为首要眼健康威胁，建议将青少年视力保健和成人近视防控作为下一阶段重点工作。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="js/bootstrap.js"></script>
+<script src="js/echarts.min.js"></script>
+<script src="js/scripts.js"></script>
+<script src="laydate/laydate.js"></script>
+<script>
+  lay('#version').html('-v' + laydate.v);
+  laydate.render({
+    elem: '#test1'
+    , range: true
+    , theme: '#1890ff'
+  });
+
+  // 定义不同筛选条件下的数据
+  var dataSources = {
+    // 全部数据
+    all: {
+      data: [{
+        x: '2016',
+        y: 4292
+      }, {
+        x: '2017',
+        y: 5432
+      }, {
+        x: '2018',
+        y: 6423
+      }, {
+        x: '2019',
+        y: 7253
+      }, {
+        x: '2020',
+        y: 8133,
+        fillColor: '#EB8C87',
+        strokeColor: '#C23829'
+      }, {
+        x: '2021',
+        y: 7932
+      }, {
+        x: '2022',
+        y: 8232
+      }, {
+        x: '2023',
+        y: 8553
+      }]
+    },
+    // 男性数据
+    male: {
+      data: [{
+        x: '2016',
+        y: 2100
+      }, {
+        x: '2017',
+        y: 2650
+      }, {
+        x: '2018',
+        y: 3150
+      }, {
+        x: '2019',
+        y: 3550
+      }, {
+        x: '2020',
+        y: 4000,
+        fillColor: '#EB8C87',
+        strokeColor: '#C23829'
+      }, {
+        x: '2021',
+        y: 3900
+      }, {
+        x: '2022',
+        y: 4050
+      }, {
+        x: '2023',
+        y: 4200
+      }]
+    },
+    // 女性数据
+    female: {
+      data: [{
+        x: '2016',
+        y: 2192
+      }, {
+        x: '2017',
+        y: 2782
+      }, {
+        x: '2018',
+        y: 3273
+      }, {
+        x: '2019',
+        y: 3703
+      }, {
+        x: '2020',
+        y: 4133,
+        fillColor: '#EB8C87',
+        strokeColor: '#C23829'
+      }, {
+        x: '2021',
+        y: 4032
+      }, {
+        x: '2022',
+        y: 4182
+      }, {
+        x: '2023',
+        y: 4353
+      }]
+    },
+    // 年龄数据 - 按年龄段分组
+    ageGroups: {
+      // 0-18岁
+      "0-18": [{
+        x: '2016',
+        y: 800
+      }, {
+        x: '2017',
+        y: 950
+      }, {
+        x: '2018',
+        y: 1100
+      }, {
+        x: '2019',
+        y: 1250
+      }, {
+        x: '2020',
+        y: 1500,
+        fillColor: '#EB8C87',
+        strokeColor: '#C23829'
+      }, {
+        x: '2021',
+        y: 1450
+      }, {
+        x: '2022',
+        y: 1550
+      }, {
+        x: '2023',
+        y: 1600
+      }],
+      // 19-40岁
+      "19-40": [{
+        x: '2016',
+        y: 1200
+      }, {
+        x: '2017',
+        y: 1500
+      }, {
+        x: '2018',
+        y: 1800
+      }, {
+        x: '2019',
+        y: 2000
+      }, {
+        x: '2020',
+        y: 2200,
+        fillColor: '#EB8C87',
+        strokeColor: '#C23829'
+      }, {
+        x: '2021',
+        y: 2150
+      }, {
+        x: '2022',
+        y: 2250
+      }, {
+        x: '2023',
+        y: 2300
+      }],
+      // 41-60岁
+      "41-60": [{
+        x: '2016',
+        y: 1500
+      }, {
+        x: '2017',
+        y: 1900
+      }, {
+        x: '2018',
+        y: 2200
+      }, {
+        x: '2019',
+        y: 2500
+      }, {
+        x: '2020',
+        y: 2700,
+        fillColor: '#EB8C87',
+        strokeColor: '#C23829'
+      }, {
+        x: '2021',
+        y: 2650
+      }, {
+        x: '2022',
+        y: 2750
+      }, {
+        x: '2023',
+        y: 2850
+      }],
+      // 61岁以上
+      "61-100": [{
+        x: '2016',
+        y: 792
+      }, {
+        x: '2017',
+        y: 1082
+      }, {
+        x: '2018',
+        y: 1323
+      }, {
+        x: '2019',
+        y: 1503
+      }, {
+        x: '2020',
+        y: 1733,
+        fillColor: '#EB8C87',
+        strokeColor: '#C23829'
+      }, {
+        x: '2021',
+        y: 1682
+      }, {
+        x: '2022',
+        y: 1682
+      }, {
+        x: '2023',
+        y: 1803
+      }]
+    }
+  };
+
+  // 柱状图配置 - 眼疾患病人数统计
+  var barOptions = {
+    series: [{
+      name: '患病人数',
+      data: dataSources.all.data
+    }],
+    chart: {
+      height: 350,
+      type: 'bar',
+    },
+    colors: ['#13b4ca', '#5cc691', '#17a2b8', '#EB8C87', '#13b4ca', '#5cc691', '#17a2b8', '#13b4ca'],
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '60%',
+        endingShape: 'rounded'
+      },
+    },
+    stroke: {
+      width: 1,
+      colors: ['#fff']
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: function (val) {
+        return val
+      }
+    },
+    yaxis: {
+      title: {
+        text: '患病人数(人)'
+      },
+      labels: {
+        formatter: function (val) {
+          return val
+        }
+      }
+    },
+    fill: {
+      opacity: 1,
+    },
+    xaxis: {
+      type: 'category',
+      title: {
+        text: '年份'
+      }
+    },
+    tooltip: {
+      y: {
+        formatter: function (val) {
+          return val + " 人"
+        }
+      }
+    }
+  };
+
+  // 饼图配置
+  var pieOptions = {
+    series: [23, 15, 15, 10, 8, 26, 3],
+    chart: {
+      width: '100%',
+      height: 350,
+      type: 'pie',
+    },
+    labels: ["糖尿病视网膜病变", "青光眼", "黄斑变性", "白内障", "高血压性视网膜病变", "近视", "其他眼病"],
+    colors: ['#13b4ca', '#5cc691', '#17a2b8', '#e74c3c', '#2a3f54', '#EB8C87', '#9b59b6'],
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 200
+        },
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }],
+    legend: {
+      position: 'right',
+      offsetY: 0,
+      height: 230,
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: function (val) {
+        return val + "%"
+      },
+      dropShadow: {
+        enabled: false,
+      }
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              label: '总计',
+              formatter: function (w) {
+                return '100%'
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  // 渲染图表
+  var barChart = new ApexCharts(document.querySelector("#chart"), barOptions);
+  barChart.render();
+
+  var pieChart = new ApexCharts(document.querySelector("#pieChart"), pieOptions);
+  pieChart.render();
+
+  // 获取年龄范围内的数据
+  function getAgeGroupData(startAge, endAge) {
+    // 定义年龄段映射
+    const ageGroups = {
+      "0-18": "0-18",
+      "19-40": "19-40",
+      "41-60": "41-60",
+      "61-100": "61-100"
+    };
+
+    // 根据年龄范围选择合适的数据
+    if (startAge <= 18 && endAge <= 18) {
+      return dataSources.ageGroups["0-18"];
+    } else if (startAge <= 40 && endAge <= 40) {
+      return dataSources.ageGroups["19-40"];
+    } else if (startAge <= 60 && endAge <= 60) {
+      return dataSources.ageGroups["41-60"];
+    } else if (startAge >= 61) {
+      return dataSources.ageGroups["61-100"];
+    } else {
+      // 如果跨多个年龄段，返回平均值
+      const groups = [];
+      if (startAge <= 18 && endAge > 18) groups.push("0-18");
+      if (startAge <= 40 && endAge > 40) groups.push("19-40");
+      if (startAge <= 60 && endAge > 60) groups.push("41-60");
+      if (startAge <= 100 && endAge > 60) groups.push("61-100");
+
+      // 计算平均值
+      const result = [];
+      for (let i = 0; i < 8; i++) { // 8年数据
+        let sum = 0;
+        groups.forEach(group => {
+          sum += dataSources.ageGroups[group][i].y;
+        });
+        result.push({
+          x: dataSources.ageGroups["0-18"][i].x,
+          y: Math.round(sum / groups.length),
+          fillColor: i === 4 ? '#EB8C87' : undefined,
+          strokeColor: i === 4 ? '#C23829' : undefined
+        });
+      }
+      return result;
+    }
+  }
+
+  // 更新图表函数
+  function updateChart() {
+    // 获取选中的年份范围
+    const startYear = parseInt(document.getElementById('startYear').value);
+    const endYear = parseInt(document.getElementById('endYear').value);
+
+    // 获取选中的性别
+    let genderFilter = 'all';
+    if (document.getElementById('genderMale').checked && !document.getElementById('genderFemale').checked) {
+      genderFilter = 'male';
+    } else if (document.getElementById('genderFemale').checked && !document.getElementById('genderMale').checked) {
+      genderFilter = 'female';
+    }
+
+    // 获取选中的年龄范围
+    const startAge = parseInt(document.getElementById('startAge').value);
+    const endAge = parseInt(document.getElementById('endAge').value);
+
+    // 根据筛选条件获取数据
+    let filteredData = [];
+
+    // 1. 先获取性别数据
+    if (genderFilter === 'all') {
+      filteredData = dataSources.all.data;
+    } else {
+      filteredData = dataSources[genderFilter].data;
+    }
+
+    // 2. 获取年龄数据
+    const ageData = getAgeGroupData(startAge, endAge);
+
+    // 3. 合并性别和年龄数据 (取平均值)
+    filteredData = filteredData.map((item, index) => {
+      return {
+        x: item.x,
+        y: Math.round((item.y + ageData[index].y) / 2),
+        fillColor: item.fillColor,
+        strokeColor: item.strokeColor
+      };
+    });
+
+    // 4. 过滤年份范围
+    filteredData = filteredData.filter(item => {
+      const year = parseInt(item.x);
+      return year >= startYear && year <= endYear;
+    });
+
+    // 更新图表
+    barChart.updateSeries([{
+      name: '患病人数',
+      data: filteredData
+    }]);
+  }
+
+  // 添加筛选器事件监听
+  document.getElementById('applyYearFilter').addEventListener('click', updateChart);
+  document.getElementById('applyAgeFilter').addEventListener('click', updateChart);
+
+  document.getElementById('genderAll').addEventListener('change', function() {
+    if (this.checked) {
+      document.getElementById('genderMale').checked = false;
+      document.getElementById('genderFemale').checked = false;
+      updateChart();
+    }
+  });
+
+  document.getElementById('genderMale').addEventListener('change', function() {
+    if (this.checked) {
+      document.getElementById('genderAll').checked = false;
+      updateChart();
+    }
+  });
+
+  document.getElementById('genderFemale').addEventListener('change', function() {
+    if (this.checked) {
+      document.getElementById('genderAll').checked = false;
+      updateChart();
+    }
+  });
+
+  // 初始化时更新一次图表
+  updateChart();
+</script>
+
+</body>
+
+</html>

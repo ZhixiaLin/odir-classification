@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>医生列表</title>
+	<script src="js/jquery.js"></script>
+	<link href="css/font-awesome.css" rel="stylesheet">
+	<link href="css/bootstrap.css" rel="stylesheet">
+	<link href="css/style-responsive.css" rel="stylesheet">
+	<link href="css/default-theme.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	<link href="css/bootstrap-reset.css" rel="stylesheet">
+</head>
+
+<body class="sticky-header">
+<div class="header-section">
+	<div class="kouhao"><img src="img/logo1.png">智慧之眼</div>
+	<div class="pull-right userdt"><img src="img/img2.jpg">医生</div>
+</div>
+	<section>
+		<div class="sidebar-left">
+			<div class="sidebar-left-info">
+				<div class=" search-field"> </div>
+				<ul class="nav nav-pills nav-stacked side-navigation">
+					<li class="active">
+						<a th:href="@{/dashboard}"><i class="fa fa-dashboard"></i> <span>控制台</span></a>
+					</li>
+					<li class="menu-list">
+						<a href="">
+							<i class="fa fa-wheelchair-alt"></i> <span>患者管理</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/add-patient}">添加患者</a></li>
+							<li><a th:href="@{/patient-list}">患者列表</a></li>
+							<li><a th:href="@{/data-query}">数据查询</a></li>
+						</ul>
+					</li>
+					<li class="menu-list">
+						<a href="">
+							<i class="fa fa-address-photo"></i> <span>图像管理</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/fundus-image-history}">眼底图像历史记录</a></li>
+						</ul>
+					</li>
+					<li class="menu-list">
+						<a href="">
+							<i class="fa fa-address-book"></i> <span>眼底图像诊断</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/UploadDualEyeImages}">双眼图像上传与诊断</a></li>
+							<li><a th:href="@{/eye-image-upload-single}">双眼图像上传与诊断-单批</a></li>
+						</ul>
+					</li>
+					<li class="menu-list">
+						<a href="">
+							<i class="fa fa-user-md"></i> <span>医生管理</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/add-doctor}">添加医生</a></li>
+							<li><a th:href="@{/doctor-list}">医生列表</a></li>
+						</ul>
+					</li>
+					<li class="menu-list">
+						<a href="javascript:;">
+							<i class="fa fa-pie-chart"></i> <span>统计管理</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/statistics}">统计管理</a></li>
+						</ul>
+					</li>
+					<li class="menu-list">
+						<a href="">
+							<i class="fa fa-cog"></i> <span>系统设置</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/change-password}">修改密码</a></li>
+							<li><a th:href="@{/system-help}">系统使用说明</a></li>
+							<li><a th:href="@{/personal-info}">个人信息</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="body-content">
+			<div class="page-head clearfix">
+				<ol class="breadcrumb pull-left">
+					<li><a href="#"><i class="fa fa-user-md"></i>医生管理</a></li>
+					<li class="active">医生列表</li>
+				</ol>
+				<div class="pull-right breadcrumbtn"> </div>
+			</div>
+			<div class="wrapper">
+				<section class="panel">
+					<header class="panel-heading head-border">医生列表</header>
+					<div class="panel-body">
+
+						<form class="form-inline">
+							<div class="form-group">
+								<label>医生姓名</label>
+								<input type="text" class="form-control">
+							</div>
+							<div class="form-group">
+								<label>联系方式</label>
+								<input type="text" class="form-control">
+							</div>
+							<div class="form-group">
+								<label>医生类型</label>
+								<select class="form-control">
+									<option>管理员</option>
+								</select>
+							</div>
+							<a href="#" class="btn btn-primary">查询</a>
+						</form>
+
+
+
+						<table class="table m-t-20">
+							<thead>
+								<tr>
+									<th>医生姓名</th>
+									<th>联系方式</th>
+									<th>医生职称</th>
+									<th>医生角色</th>
+									<th>所在科室</th>
+									<th>最近操作时间</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>李建国</td>
+								<td>13898765432</td>
+								<td>主任医师</td>
+								<td>管理员</td>
+								<td>眼科</td>
+								<td>2025-10-01 09:15:30</td>
+								<td><a href="#">编辑</a> <a href="#">删除</a></td>
+							</tr>
+							<tr>
+								<td>王晓梅</td>
+								<td>13987654321</td>
+								<td>副主任医师</td>
+								<td>普通医生</td>
+								<td>眼科</td>
+								<td>2025-09-28 14:20:45</td>
+								<td><a href="#">编辑</a> <a href="#">删除</a></td>
+							</tr>
+							<tr>
+								<td>陈志强</td>
+								<td>13765432109</td>
+								<td>主治医师</td>
+								<td>管理员</td>
+								<td>眼科</td>
+								<td>2025-09-25 11:10:00</td>
+								<td><a href="#">编辑</a> <a href="#">删除</a></td>
+							</tr>
+							<tr>
+								<td>赵丽娜</td>
+								<td>13698765432</td>
+								<td>住院医师</td>
+								<td>普通医生</td>
+								<td>眼科</td>
+								<td>2025-09-20 16:45:15</td>
+								<td><a href="#">编辑</a> <a href="#">删除</a></td>
+							</tr>
+							<tr>
+								<td>孙海涛</td>
+								<td>13512349876</td>
+								<td>主任医师</td>
+								<td>管理员</td>
+								<td>眼科</td>
+								<td>2025-09-18 08:30:50</td>
+								<td><a href="#">编辑</a> <a href="#">删除</a></td>
+							</tr>
+							<tr>
+								<td>周晓华</td>
+								<td>13456789012</td>
+								<td>副主任医师</td>
+								<td>普通医生</td>
+								<td>眼科</td>
+								<td>2025-09-15 13:25:40</td>
+								<td><a href="#">编辑</a> <a href="#">删除</a></td>
+							</tr>
+							</tbody>
+						</table>
+
+						<div class="page clearfix">
+							<div class="pull-left">共 400 条记录 第 1 / 80 页</div>
+							<div class="pull-right">
+								<nav aria-label="..." class="pull-left">
+									<ul class="pagination">
+										<li class="disabled"><a href="#" aria-label="Previous"><span
+													aria-hidden="true">«</span></a></li>
+										<li class="active"><a href="#">1 </a></li>
+										<li><a href="#">2</a></li>
+										<li><a href="#">3</a></li>
+										<li><a href="#">4</a></li>
+										<li><a href="#">5</a></li>
+										<li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+									</ul>
+								</nav>
+
+							</div>
+
+						</div>
+
+
+					</div>
+				</section>
+			</div>
+		</div>
+	</section>
+
+
+
+	<script src="js/bootstrap.js"></script>
+	<script src="js/echarts.min.js"></script>
+	<script src="js/scripts.js"></script>
+	<script src="laydate/laydate.js"></script>
+	<script>
+		lay('#version').html('-v' + laydate.v);
+		laydate.render({
+			elem: '#test1'
+			, range: true
+			, theme: '#1890ff'
+		});
+	</script>
+</body>
+
+</html>
