@@ -45,6 +45,11 @@ data/odir4/
     └── other/
 ```
 
+## Directory
+```bash
+cd ai-model-python
+```
+
 ## Installation
 
 1. Install dependencies:
