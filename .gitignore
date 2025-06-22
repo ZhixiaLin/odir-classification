@@ -52,6 +52,8 @@ front-end/dist/
 front-end/nbdist/
 front-end/.nb-gradle/
 
+out/
+
 
 # =================================================================
 # Python AI Model Rules (ai-model-python/)
