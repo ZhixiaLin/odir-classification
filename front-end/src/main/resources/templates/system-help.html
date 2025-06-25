@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>系统使用说明</title>
+    <script src="js/jquery.js"></script>
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet">
+    <link href="css/default-theme.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/bootstrap-reset.css" rel="stylesheet">
+</head>
+
+<body class="sticky-header">
+<div class="header-section">
+    <div class="kouhao"><img src="img/logo1.png">智慧之眼</div>
+    <div class="pull-right userdt"><img src="img/img2.jpg">医生</div>
+</div>
+    <section>
+        <div class="sidebar-left">
+            <div class="sidebar-left-info">
+                <div class=" search-field"> </div>
+                <ul class="nav nav-pills nav-stacked side-navigation">
+                    <li class="active">
+                        <a th:href="@{/dashboard}"><i class="fa fa-dashboard"></i> <span>控制台</span></a>
+                    </li>
+                    <li class="menu-list">
+                        <a href="">
+                            <i class="fa fa-wheelchair-alt"></i> <span>患者管理</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/add-patient}">添加患者</a></li>
+                            <li><a th:href="@{/patient-list}">患者列表</a></li>
+                            <li><a th:href="@{/data-query}">数据查询</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href="">
+                            <i class="fa fa-address-photo"></i> <span>图像管理</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/fundus-image-history}">眼底图像历史记录</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href="">
+                            <i class="fa fa-address-book"></i> <span>眼底图像诊断</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/UploadDualEyeImages}">双眼图像上传与诊断</a></li>
+                            <li><a th:href="@{/eye-image-upload-single}">双眼图像上传与诊断-单批</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href="">
+                            <i class="fa fa-user-md"></i> <span>医生管理</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/add-doctor}">添加医生</a></li>
+                            <li><a th:href="@{/doctor-list}">医生列表</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href="javascript:;">
+                            <i class="fa fa-pie-chart"></i> <span>统计管理</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/statistics}">统计管理</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href="">
+                            <i class="fa fa-cog"></i> <span>系统设置</span>
+                        </a>
+                        <ul class="child-list">
+                            <li><a th:href="@{/change-password}">修改密码</a></li>
+                            <li><a th:href="@{/system-help}">系统使用说明</a></li>
+                            <li><a th:href="@{/personal-info}">个人信息</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="body-content">
+            <div class="page-head clearfix">
+                <ol class="breadcrumb pull-left">
+                    <li><a href="#"><i class="fa fa-cog"></i> 系统设置</a></li>
+                    <li class="active">系统使用说明</li>
+                </ol>
+                <div class="pull-right breadcrumbtn"> </div>
+            </div>
+            <div class="wrapper">
+                <section class="panel">
+                    <header class="panel-heading head-border">系统使用说明</header>
+                    <div class="panel-body">
+                        <h3 style="line-height: 1.8">欢迎来到智慧之眼系统！</h3>
+                        <p style="line-height: 1.8">本系统旨在帮助医生们更高效地管理患者信息和眼底图像数据。以下是一些超实用的使用技巧，保证让你爱不释手！</p>
+
+                        <h4 style="line-height: 1.8">1. 患者管理</h4>
+                        <p style="line-height: 1.8">在这里，你可以轻松地添加新患者、查看患者列表以及查询患者数据。别忘了，患者的名字都是随机生成的哦！</p>
+
+                        <h4 style="line-height: 1.8">2. 图像管理</h4>
+                        <p style="line-height: 1.8">上传眼底图像时，请确保图像清晰且对焦准确。否则，系统可能会误判为“外星人入侵”！</p>
+
+                        <h4 style="line-height: 1.8">3. 眼底图像诊断</h4>
+                        <p style="line-height: 1.8">点击“可视化眼底图像”按钮，系统会自动识别图像中的各种异常。不过，有时候它可能会误判为“眼球里的小星星”哦！</p>
+
+                        <h4 style="line-height: 1.8">4. 医生管理</h4>
+                        <p style="line-height: 1.8">在这里，你可以添加新医生、查看医生列表。但请注意，医生的名字也是随机生成的，所以请不要惊讶地发现“孙悟空”医生！</p>
+
+                        <h4 style="line-height: 1.8">5. 统计管理</h4>
+                        <p style="line-height: 1.8">统计管理模块可以帮助你查看各种统计数据。不过，数据中的某些部分可能会被神秘力量篡改，变成“未知星球”的数据哦！</p>
+
+                        <h4 style="line-height: 1.8">6. 系统设置</h4>
+                        <p style="line-height: 1.8">在这里，你可以修改密码、查看系统使用说明以及编辑个人信息。但请注意，修改密码时请不要输入“123456”，否则系统会认为你在开愚人节玩笑！</p>
+
+                        <p style="line-height: 1.8">希望以上使用说明能帮助你更好地使用智慧之眼系统。如果你有任何问题或建议，欢迎随时联系我们。祝你使用愉快！</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/bootstrap.js"></script>
+    <script src="js/echarts.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="laydate/laydate.js"></script>
+    <script>
+        lay('#version').html('-v' + laydate.v);
+        laydate.render({
+            elem: '#test1'
+            , range: true
+            , theme: '#1890ff'
+        });
+    </script>
+</body>
+
+</html>

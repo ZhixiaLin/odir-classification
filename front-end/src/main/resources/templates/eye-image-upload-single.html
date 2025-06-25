@@ -1,0 +1,592 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>智慧之眼 - 双眼图像上传与诊断</title>
+  <script th:src="@{/js/jquery.js}"></script>
+  <link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+  <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+  <link th:href="@{/css/style-responsive.css}" rel="stylesheet">
+  <link th:href="@{/css/default-theme.css}" rel="stylesheet">
+  <link th:href="@{/css/bootstrap-reset.css}" rel="stylesheet">
+  <link th:href="@{/css/style.css}" rel="stylesheet"> <!-- 确保在最后 -->
+  <style>
+    .file2 {
+      text-align: center;
+      margin-bottom: 20px;
+      margin-left:30px;
+      position: relative;
+    }
+
+    .file2 img {
+      max-width: 100%;
+      max-height: 300px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .file2 input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file2 span {
+      display: block;
+      margin-top: 10px;
+      color: #888;
+    }
+
+    /* 底部按钮区域 */
+    .processing-buttons {
+      position: fixed;
+      bottom: 0;
+      left: 240px;
+      /* 左侧导航栏宽度 */
+      right: 0;
+      height: 125px;
+      background-color: #fff;
+      /* 背景颜色与 col-xs-12 一致 */
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+      /* 内边距与 col-xs-12 一致 */
+      margin-left: 15px;
+      /* 与 col-xs-12 的左边距一致 */
+      margin-right: 15px;
+      /* 与 col-xs-12 的右边距一致 */
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      /* 阴影效果与 col-xs-12 一致 */
+    }
+
+    .processing-buttons button {
+      margin: 0 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .processing-buttons button.btn-warning {
+      background-color: #5cc691;
+      color: #fff;
+      border-color: #5cc691;
+    }
+    .processing-buttons button.btn-warning :hover {
+      background-color: #43936b;
+      border-color: #43936b;
+    }
+    .processing-buttons button:hover {
+      background-color: #f1f1f1;
+    }
+
+    .processing-buttons button.btn-primary {
+      background-color: #13b4ca;
+      color: #fff;
+      border-color: #13b4ca;
+    }
+
+    .processing-buttons button.btn-primary:hover {
+      background-color: #118b9b;
+      border-color: #118b9b;
+    }
+
+    .processing-buttons button.btn-success {
+      background-color: #5cc691;
+      color: #fff;
+      border-color: #5cc691;
+    }
+
+    .processing-buttons button.btn-success:hover {
+      background-color: #43936b;
+      border-color: #43936b;
+    }
+
+    .processing-buttons button.btn-info {
+      background-color: #17a2b8;
+      color: #fff;
+      border-color: #17a2b8;
+    }
+
+    .processing-buttons button.btn-info:hover {
+      background-color: #138496;
+      border-color: #117a8b;
+    }
+
+    /* 左侧导航栏宽度 */
+    .sidebar-left {
+      width: 240px;
+      position: fixed;
+      top: 60px;
+      /* 头部高度 */
+      bottom: 0;
+      left: 0;
+      background-color: #2a3f54;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    /* 主体内容区域 */
+    .body-content {
+      margin-left: 220px;
+      /* 左侧导航栏宽度 */
+      padding-bottom: 125px;
+      position:relative;
+      /* 底部按钮区域高度 */
+      padding: 20px;
+    }
+  </style>
+</head>
+<body class="sticky-header">
+<div class="header-section">
+  <div class="kouhao"><img src="img/logo1.png">智慧之眼</div>
+  <div class="pull-right userdt"><img src="img/img2.jpg">医生</div>
+</div>
+<section>
+  <!-- 左侧导航栏 -->
+  <div class="sidebar-left">
+    <div class="sidebar-left-info">
+      <div class=" search-field"> </div>
+      <ul class="nav nav-pills nav-stacked side-navigation">
+        <li class="active">
+          <a th:href="@{/dashboard}"><i class="fa fa-dashboard"></i> <span>控制台</span></a>
+        </li>
+        <li class="menu-list">
+          <a href="">
+            <i class="fa fa-wheelchair-alt"></i> <span>患者管理</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/add-patient}">添加患者</a></li>
+            <li><a th:href="@{/patient-list}">患者列表</a></li>
+            <li><a th:href="@{/data-query}">数据查询</a></li>
+          </ul>
+        </li>
+        <li class="menu-list">
+          <a href="">
+            <i class="fa fa-address-photo"></i> <span>图像管理</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/fundus-image-history}">眼底图像历史记录</a></li>
+          </ul>
+        </li>
+        <li class="menu-list">
+          <a href="">
+            <i class="fa fa-address-book"></i> <span>眼底图像诊断</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/UploadDualEyeImages}">双眼图像上传与诊断</a></li>
+            <li><a th:href="@{/eye-image-upload-single}">双眼图像上传与诊断-单批</a></li>
+          </ul>
+        </li>
+        <li class="menu-list">
+          <a href="">
+            <i class="fa fa-user-md"></i> <span>医生管理</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/add-doctor}">添加医生</a></li>
+            <li><a th:href="@{/doctor-list}">医生列表</a></li>
+          </ul>
+        </li>
+        <li class="menu-list">
+          <a href="javascript:;">
+            <i class="fa fa-pie-chart"></i> <span>统计管理</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/statistics}">统计管理</a></li>
+          </ul>
+        </li>
+        <li class="menu-list">
+          <a href="">
+            <i class="fa fa-cog"></i> <span>系统设置</span>
+          </a>
+          <ul class="child-list">
+            <li><a th:href="@{/change-password}">修改密码</a></li>
+            <li><a th:href="@{/system-help}">系统使用说明</a></li>
+            <li><a th:href="@{/personal-info}">个人信息</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- 主体内容 -->
+  <div class="body-content">
+    <div class="page-head clearfix">
+      <ol class="breadcrumb pull-left">
+        <li><a th:href="@{/dashboard}"><i class="fa fa-address-book"></i> 眼底图像诊断</a></li>
+        <li class="active">双眼图像上传与诊断</li>
+      </ol>
+      <div class="pull-right breadcrumbtn"></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-8"> <!-- 缩小图像区域的宽度 -->
+        <div class="col-xs-6">
+          <div class="file2">
+            <label for="leftEyeUpload">
+              <input type="file" id="leftEyeUpload" accept="image/*" onchange="previewImage(this, 'leftEyePreview')">
+              <img id="leftEyePreview" th:src="@{/img/yanj.png}" alt="上传左眼图像">
+              <span>上传左眼图像</span>
+            </label>
+          </div>
+        </div>
+        <div class="col-xs-6">
+          <div class="file2">
+            <label for="rightEyeUpload">
+              <input type="file" id="rightEyeUpload" accept="image/*" onchange="previewImage(this, 'rightEyePreview')">
+              <img id="rightEyePreview" th:src="@{/img/yanj.png}" alt="上传右眼图像">
+              <span>上传右眼图像</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-4" id="resultsContainer">
+      </div>
+    </div>
+  </div>
+</section>
+<!-- 底部按钮区域 -->
+<div class="processing-buttons">
+  <button class="btn btn-primary m-t-20" onclick="preprocessImages()">图像预处理</button>
+  <button class="btn btn-success m-t-20" onclick="recognizeImages()">图像识别</button>
+  <button class="btn btn-info m-t-20" onclick="visualizeImages()">可视化眼底图像</button>
+  <button class="btn btn-warning m-t-20" onclick="restoreOriginalImages()">恢复原始图像</button>
+</div>
+<script src="js/bootstrap.js"></script>
+<script src="js/echarts.min.js"></script>
+<script src="js/scripts.js"></script>
+<script src="laydate/laydate.js"></script>
+<script>
+  let leftEyeImage = null;
+  let rightEyeImage = null;
+  const API_BASE_URL = 'http://3qsr57.natappfree.cc';
+  function previewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        preview.src = e.target.result;
+        if (previewId === 'leftEyePreview') {
+          leftEyeImage = new Image();
+          leftEyeImage.src = e.target.result;
+        } else if (previewId === 'rightEyePreview') {
+          rightEyeImage = new Image();
+          rightEyeImage.src = e.target.result;
+        }
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+  function preprocessImages() {
+    if (!leftEyeImage && !rightEyeImage) {
+      alert("请先上传眼底图像");
+      return;
+    }
+    let processingContainer = document.querySelector('.panel-body');
+    let statusDiv = document.getElementById('processingStatus');
+    if (!statusDiv) {
+      statusDiv = document.createElement('div');
+      statusDiv.id = 'processingStatus';
+      statusDiv.className = 'alert alert-info mt-3';
+      processingContainer.appendChild(statusDiv);
+    }
+
+    statusDiv.innerHTML = '<p>正在进行预处理，请稍候...</p>';
+
+    let completedImages = 0;
+    const totalImages = (leftEyeImage ? 1 : 0) + (rightEyeImage ? 1 : 0);
+
+    // Process left eye image if it exists
+    if (leftEyeImage) {
+      processEyeImage(leftEyeImage.src, 'leftEyePreview', '左眼');
+    }
+
+    // Process right eye image if it exists
+    if (rightEyeImage) {
+      processEyeImage(rightEyeImage.src, 'rightEyePreview', '右眼');
+    }
+
+    function processEyeImage(imageSrc, previewId, eyeName) {
+      fetch(imageSrc)
+              .then(res => res.blob())
+              .then(blob => {
+                const formData = new FormData();
+                formData.append('eye', blob, `${eyeName}.jpg`);
+
+                return fetch(`${API_BASE_URL}/preprocess`, {
+                  method: 'POST',
+                  body: formData
+                });
+              })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.blob();
+              })
+              .then(imageBlob => {
+                // Update the image with preprocessed version
+                const preprocessedUrl = URL.createObjectURL(imageBlob);
+                document.getElementById(previewId).src = preprocessedUrl;
+
+                completedImages++;
+                updateProgress(completedImages, totalImages);
+              })
+              .catch(error => {
+                console.error(`Error during preprocessing ${eyeName}:`, error);
+                statusDiv.innerHTML += `<p class="text-danger">${eyeName}预处理失败: ${error.message}</p>`;
+
+                completedImages++;
+                updateProgress(completedImages, totalImages);
+              });
+    }
+
+    function updateProgress(completed, total) {
+      if (completed === total) {
+        statusDiv.innerHTML = '<p>预处理完成。</p>';
+      } else {
+        statusDiv.innerHTML = `<p>正在进行预处理 (${completed}/${total})...</p>`;
+      }
+    }
+  }
+  function recognizeImages() {
+    if (!leftEyeImage && !rightEyeImage) {
+      alert("请先上传眼底图像");
+      return;
+    }
+
+    // Create container for status updates
+    let statusDiv = document.getElementById('processingStatus');
+    if (!statusDiv) {
+      statusDiv = document.createElement('div');
+      statusDiv.id = 'processingStatus';
+      statusDiv.className = 'alert alert-info mt-3';
+      // Append to body-content instead of non-existent panel-body
+      document.querySelector('.body-content').appendChild(statusDiv);
+    }
+
+    statusDiv.innerHTML = '<p>正在进行识别，请稍候...</p>';
+
+    // Create FormData object
+    const formData = new FormData();
+
+    // Get the current images from the preview elements
+    const leftEyeImg = document.getElementById('leftEyePreview');
+    const rightEyeImg = document.getElementById('rightEyePreview');
+
+    // Debug logs
+    console.log("Starting recognition process");
+    console.log("Left eye src:", leftEyeImg.src);
+    console.log("Right eye src:", rightEyeImg.src);
+
+    // First convert the image elements' sources to blobs
+    Promise.all([
+      leftEyeImg.src ? fetch(leftEyeImg.src).then(res => res.blob()) : Promise.resolve(null),
+      rightEyeImg.src ? fetch(rightEyeImg.src).then(res => res.blob()) : Promise.resolve(null)
+    ])
+            .then(([leftBlob, rightBlob]) => {
+              console.log("Blobs created:", leftBlob, rightBlob);
+
+              if (leftBlob) formData.append('left_eye', leftBlob, 'left_eye.jpg');
+              if (rightBlob) formData.append('right_eye', rightBlob, 'right_eye.jpg');
+
+              console.log("Sending request to backend");
+
+              // Send request to backend
+              return fetch(`${API_BASE_URL}/predict`, {
+                method: 'POST',
+                body: formData
+              });
+            })
+            .then(response => {
+              console.log("Response received:", response.status);
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(data => {
+              console.log("Recognition results:", data);
+              // Call the displayResults function that's defined at the same level
+              displayResults(data);
+            })
+            .catch(error => {
+              console.error('Error during recognition:', error);
+              statusDiv.innerHTML = `<p class="text-danger">识别过程中出错: ${error.message}</p>`;
+            });
+  }
+
+  // Move displayResults outside of recognizeImages to fix the scope issue
+  function displayResults(data) {
+    // Use the results container
+    let resultsContainer = document.getElementById('resultsContainer');
+    if (!resultsContainer) {
+      resultsContainer = document.createElement('div');
+      resultsContainer.id = 'resultsContainer';
+      document.querySelector('.row').appendChild(resultsContainer);
+    }
+
+    // Clear previous results
+    resultsContainer.innerHTML = '';
+
+    // Create result title
+    let titleDiv = document.createElement('h4');
+    titleDiv.textContent = '识别结果';
+    resultsContainer.appendChild(titleDiv);
+
+    if (data.predictions && data.predictions.length > 0) {
+      // Left eye result
+      if (data.predictions[0]) {
+        let leftEyeResult = document.createElement('div');
+        leftEyeResult.className = 'panel panel-default';
+        leftEyeResult.innerHTML = `
+        <div class="panel-heading">左眼诊断结果</div>
+        <div class="panel-body">
+          <p><strong>类别:</strong> ${data.predictions[0].class || 'N/A'}</p>
+          <p><strong>置信度:</strong> ${(data.predictions[0].probability * 100 || 0).toFixed(2)}%</p>
+        </div>
+      `;
+        resultsContainer.appendChild(leftEyeResult);
+      }
+
+      // Right eye result
+      if (data.predictions[1]) {
+        let rightEyeResult = document.createElement('div');
+        rightEyeResult.className = 'panel panel-default';
+        rightEyeResult.innerHTML = `
+        <div class="panel-heading">右眼诊断结果</div>
+        <div class="panel-body">
+          <p><strong>类别:</strong> ${data.predictions[1].class || 'N/A'}</p>
+          <p><strong>置信度:</strong> ${(data.predictions[1].probability * 100 || 0).toFixed(2)}%</p>
+        </div>
+      `;
+        resultsContainer.appendChild(rightEyeResult);
+      }
+    } else {
+      let noResultsDiv = document.createElement('div');
+      noResultsDiv.innerHTML = '<p>无法获取诊断结果</p>';
+      resultsContainer.appendChild(noResultsDiv);
+    }
+
+    // Update status
+    let statusDiv = document.getElementById('processingStatus');
+    if (statusDiv) {
+      statusDiv.innerHTML = '<p>识别完成。</p>';
+    }
+  }
+
+  function visualizeImages() {
+    if (!leftEyeImage && !rightEyeImage) {
+      alert("请先上传眼底图像");
+      return;
+    }
+
+    // Create status container
+    let processingContainer = document.querySelector('.panel-body');
+    let statusDiv = document.getElementById('processingStatus');
+    if (!statusDiv) {
+      statusDiv = document.createElement('div');
+      statusDiv.id = 'processingStatus';
+      statusDiv.className = 'alert alert-info mt-3';
+      processingContainer.appendChild(statusDiv);
+    }
+
+    statusDiv.innerHTML = '<p>正在生成可视化热力图，请稍候...</p>';
+
+    let completedImages = 0;
+    const totalImages = (leftEyeImage ? 1 : 0) + (rightEyeImage ? 1 : 0);
+
+    // Process left eye image if it exists
+    if (leftEyeImage) {
+      const leftEyeImg = document.getElementById('leftEyePreview');
+      visualizeEyeImage(leftEyeImg.src, 'leftEyePreview', '左眼');
+    }
+
+    // Process right eye image if it exists
+    if (rightEyeImage) {
+      const rightEyeImg = document.getElementById('rightEyePreview');
+      visualizeEyeImage(rightEyeImg.src, 'rightEyePreview', '右眼');
+    }
+
+    function visualizeEyeImage(imageSrc, previewId, eyeName) {
+      fetch(imageSrc)
+              .then(res => res.blob())
+              .then(blob => {
+                const formData = new FormData();
+                formData.append('eye', blob, `${eyeName}.jpg`);
+
+                return fetch(`${API_BASE_URL}/visualize`, {
+                  method: 'POST',
+                  body: formData
+                });
+              })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.blob();
+              })
+              .then(imageBlob => {
+                // Update the image with visualization
+                const visualizationUrl = URL.createObjectURL(imageBlob);
+                document.getElementById(previewId).src = visualizationUrl;
+
+                completedImages++;
+                updateProgress(completedImages, totalImages);
+              })
+              .catch(error => {
+                console.error(`Error during visualization of ${eyeName}:`, error);
+                statusDiv.innerHTML += `<p class="text-danger">${eyeName}可视化失败: ${error.message}</p>`;
+
+                completedImages++;
+                updateProgress(completedImages, totalImages);
+              });
+    }
+
+    function updateProgress(completed, total) {
+      if (completed === total) {
+        statusDiv.innerHTML = '<p>可视化完成。热力图显示了模型关注的眼底区域。</p>';
+      } else {
+        statusDiv.innerHTML = `<p>正在生成可视化热力图 (${completed}/${total})...</p>`;
+      }
+    }
+  }
+  function restoreOriginalImages() {
+    if (!leftEyeImage && !rightEyeImage) {
+      alert("没有可恢复的图像");
+      return;
+    }
+
+    // 恢复左眼图像
+    if (leftEyeImage) {
+      document.getElementById('leftEyePreview').src = leftEyeImage.src;
+    }
+
+    // 恢复右眼图像
+    if (rightEyeImage) {
+      document.getElementById('rightEyePreview').src = rightEyeImage.src;
+    }
+
+    // 通知用户
+    let processingContainer = document.querySelector('.panel-body');
+    let statusDiv = document.getElementById('processingStatus');
+    if (!statusDiv) {
+      statusDiv = document.createElement('div');
+      statusDiv.id = 'processingStatus';
+      statusDiv.className = 'alert alert-info mt-3';
+      processingContainer.appendChild(statusDiv);
+    }
+    statusDiv.innerHTML = '<p>所有图像已恢复到原始状态</p>';
+  }
+</script>
+</body>
+</html>

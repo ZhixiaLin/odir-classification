@@ -1,0 +1,719 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>眼底图像历史记录</title>
+	<script src="js/jquery.js"></script>
+	<link href="css/font-awesome.css" rel="stylesheet">
+	<link href="css/bootstrap.css" rel="stylesheet">
+	<link href="css/style-responsive.css" rel="stylesheet">
+	<link href="css/default-theme.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	<link href="css/bootstrap-reset.css" rel="stylesheet">
+	<style>
+		.no-results {
+			text-align: center;
+			padding: 20px;
+			color: #999;
+			font-style: italic;
+		}
+		.pagination li.active a {
+			background-color: #1890ff;
+			color: white;
+			border-color: #1890ff;
+		}
+		.pagination li a {
+			color: #1890ff;
+		}
+		.pagination li.disabled a {
+			color: #777;
+			pointer-events: none;
+			cursor: not-allowed;
+		}
+	</style>
+</head>
+
+<body class="sticky-header">
+<div class="header-section">
+	<div class="kouhao"><img src="img/logo1.png">智慧之眼</div>
+	<div class="pull-right userdt"><img src="img/img2.jpg">医生</div>
+</div>
+<section>
+	<div class="sidebar-left">
+		<div class="sidebar-left-info">
+			<div class=" search-field"> </div>
+			<ul class="nav nav-pills nav-stacked side-navigation">
+				<li class="active">
+					<a th:href="@{/dashboard}"><i class="fa fa-dashboard"></i> <span>控制台</span></a>
+				</li>
+				<li class="menu-list">
+					<a href="">
+						<i class="fa fa-wheelchair-alt"></i> <span>患者管理</span>
+					</a>
+					<ul class="child-list">
+						<li><a th:href="@{/add-patient}">添加患者</a></li>
+						<li><a th:href="@{/patient-list}">患者列表</a></li>
+						<li><a th:href="@{/data-query}">数据查询</a></li>
+					</ul>
+				</li>
+				<li class="menu-list">
+					<a href="">
+						<i class="fa fa-address-photo"></i> <span>图像管理</span>
+					</a>
+					<ul class="child-list">
+						<li><a th:href="@{/fundus-image-history}">眼底图像历史记录</a></li>
+					</ul>
+				</li>
+				<li class="menu-list">
+					<a href="">
+						<i class="fa fa-address-book"></i> <span>眼底图像诊断</span>
+					</a>
+					<ul class="child-list">
+						<li><a th:href="@{/UploadDualEyeImages}">双眼图像上传与诊断</a></li>
+						<li><a th:href="@{/eye-image-upload-single}">双眼图像上传与诊断-单批</a></li>
+					</ul>
+				</li>
+				<li class="menu-list">
+					<a href="">
+						<i class="fa fa-user-md"></i> <span>医生管理</span>
+					</a>
+					<ul class="child-list">
+						<li><a th:href="@{/add-doctor}">添加医生</a></li>
+						<li><a th:href="@{/doctor-list}">医生列表</a></li>
+					</ul>
+				</li>
+				<li class="menu-list">
+					<a href="javascript:;">
+						<i class="fa fa-pie-chart"></i> <span>统计管理</span>
+					</a>
+					<ul class="child-list">
+						<li><a th:href="@{/statistics}">统计管理</a></li>
+					</ul>
+				</li>
+				<li class="menu-list">
+					<a href="">
+						<i class="fa fa-cog"></i> <span>系统设置</span>
+					</a>
+					<ul class="child-list">
+						<li><a th:href="@{/change-password}">修改密码</a></li>
+						<li><a th:href="@{/system-help}">系统使用说明</a></li>
+						<li><a th:href="@{/personal-info}">个人信息</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="body-content">
+		<div class="page-head clearfix">
+			<ol class="breadcrumb pull-left">
+				<li><a href="#"><i class="fa fa-address-photo"></i>图像管理</a></li>
+				<li class="active">眼底图像历史记录</li>
+			</ol>
+			<div class="pull-right breadcrumbtn">
+				<button class="btn btn-default" id="export-btn"><i class="fa fa-download"></i> 导出记录</button>
+			</div>
+		</div>
+		<div class="wrapper">
+			<section class="panel">
+				<header class="panel-heading head-border">眼底图像历史记录</header>
+				<div class="panel-body">
+					<div class="form1">
+						<ul class="row">
+							<li class="col-xs-3">
+								<span>姓名/ID：</span>
+								<input type="text" class="form-control" id="search-name" placeholder="患者姓名或ID">
+							</li>
+							<li class="col-xs-3">
+								<span>操作类型：</span>
+								<select class="form-control" id="search-type">
+									<option value="">全部</option>
+									<option value="single">单次审查</option>
+									<option value="batch">批量审查</option>
+								</select>
+							</li>
+							<li class="col-xs-3">
+								<span>操作时间：</span>
+								<input type="text" class="form-control" id="date-range" placeholder="选择时间范围">
+							</li>
+							<li class="col-xs-3">
+								<span>状态：</span>
+								<select class="form-control" id="search-status">
+									<option value="">全部</option>
+									<option value="completed">已完成</option>
+									<option value="processing">处理中</option>
+									<option value="failed">失败</option>
+								</select>
+							</li>
+						</ul>
+						<div class="text-center m-t-10">
+							<button class="btn btn-primary" id="search-btn"><i class="fa fa-search"></i> 搜索</button>
+							<button class="btn btn-default" id="reset-btn">重置</button>
+						</div>
+					</div>
+
+					<table class="table m-t-20 table-hover" id="records-table">
+						<thead>
+						<tr>
+							<th>操作ID</th>
+							<th>操作类型</th>
+							<th>患者信息</th>
+							<th>操作详情</th>
+							<th>涉及图像数</th>
+							<th>操作时间</th>
+							<th>状态</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody id="table-body">
+						<!-- 数据将通过JavaScript动态加载 -->
+						</tbody>
+					</table>
+
+					<div class="page clearfix">
+						<div class="pull-left">共 <span id="total-records">0</span> 条记录 第 <span id="current-page">1</span> / <span id="total-pages">1</span> 页</div>
+						<div class="pull-right">
+							<nav aria-label="..." class="pull-left">
+								<ul class="pagination" id="pagination">
+									<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+									<!-- 页码将通过JavaScript动态生成 -->
+									<li><a href="static/report/report.pdf" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</section>
+<script src="laydate/laydate.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/echarts.min.js"></script>
+<script src="js/scripts.js"></script>
+<script>
+	// 模拟数据 - 包含18条记录用于测试分页
+	const allRecords = [
+		{
+			id: "OP-20230501-001",
+			type: "single",
+			patientName: "胡晓婷",
+			patientId: "PT001",
+			age: "40",
+			phone: "13652645256",
+			detail: "双眼眼底图像诊断",
+			imageCount: 1,
+			time: "2023-05-01 14:30:22",
+			status: "completed",
+			reportUrl: "reports/single_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230501-002",
+			type: "batch",
+			patientName: "高血压性眼疾批量审查",
+			patientId: "BATCH001",
+			patientCount: "共15名患者",
+			detail: "批量眼底图像筛查",
+			imageCount: 30,
+			time: "2023-05-01 15:45:10",
+			status: "completed",
+			reportUrl: "reports/batch_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230430-015",
+			type: "single",
+			patientName: "李小明",
+			patientId: "PT023",
+			age: "34",
+			phone: "13800138000",
+			detail: "双眼图像对比诊断",
+			imageCount: 2,
+			time: "2023-04-30 09:15:33",
+			status: "completed",
+			reportUrl: "reports/single_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230429-003",
+			type: "batch",
+			patientName: "糖尿病性眼疾筛查",
+			patientId: "BATCH002",
+			patientCount: "共8名患者",
+			detail: "季度复查批量诊断",
+			imageCount: 16,
+			time: "2023-04-29 16:20:45",
+			status: "completed",
+			reportUrl: "reports/batch_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230428-007",
+			type: "single",
+			patientName: "王小红",
+			patientId: "PT045",
+			age: "28",
+			phone: "13900139000",
+			detail: "双眼图像复查",
+			imageCount: 1,
+			time: "2023-04-28 11:05:12",
+			status: "completed",
+			reportUrl: "reports/single_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230427-001",
+			type: "batch",
+			patientName: "老年患者年度检查",
+			patientId: "BATCH003",
+			patientCount: "共25名患者",
+			detail: "年度健康检查",
+			imageCount: 50,
+			time: "2023-04-27 10:00:00",
+			status: "processing",
+			reportUrl: "reports/batch_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230426-012",
+			type: "single",
+			patientName: "张大山",
+			patientId: "PT067",
+			age: "52",
+			phone: "13700137000",
+			detail: "双眼图像初步诊断",
+			imageCount: 2,
+			time: "2023-04-26 14:22:18",
+			status: "completed",
+			reportUrl: "reports/single_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230425-008",
+			type: "single",
+			patientName: "赵小兰",
+			patientId: "PT078",
+			age: "45",
+			phone: "13500135000",
+			detail: "右眼图像复查",
+			imageCount: 1,
+			time: "2023-04-25 09:30:45",
+			status: "completed",
+			reportUrl: "reports/single_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230424-005",
+			type: "batch",
+			patientName: "青光眼筛查",
+			patientId: "BATCH004",
+			patientCount: "共10名患者",
+			detail: "青光眼筛查批量诊断",
+			imageCount: 20,
+			time: "2023-04-24 14:15:30",
+			status: "completed",
+			reportUrl: "reports/batch_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230423-003",
+			type: "single",
+			patientName: "刘大伟",
+			patientId: "PT089",
+			age: "38",
+			phone: "13400134000",
+			detail: "双眼图像复查",
+			imageCount: 2,
+			time: "2023-04-23 11:20:15",
+			status: "completed",
+			reportUrl: "reports/single_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230422-002",
+			type: "batch",
+			patientName: "视网膜病变筛查",
+			patientId: "BATCH005",
+			patientCount: "共12名患者",
+			detail: "视网膜病变筛查",
+			imageCount: 24,
+			time: "2023-04-22 16:45:00",
+			status: "completed",
+			reportUrl: "reports/batch_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230421-001",
+			type: "single",
+			patientName: "陈小云",
+			patientId: "PT090",
+			age: "29",
+			phone: "13300133000",
+			detail: "双眼图像初步诊断",
+			imageCount: 2,
+			time: "2023-04-21 10:10:10",
+			status: "completed",
+			reportUrl: "reports/single_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230420-004",
+			type: "single",
+			patientName: "黄大明",
+			patientId: "PT101",
+			age: "41",
+			phone: "13200132000",
+			detail: "右眼图像复查",
+			imageCount: 1,
+			time: "2023-04-20 15:25:40",
+			status: "completed",
+			reportUrl: "reports/single_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230419-006",
+			type: "batch",
+			patientName: "白内障筛查",
+			patientId: "BATCH006",
+			patientCount: "共18名患者",
+			detail: "白内障筛查批量诊断",
+			imageCount: 36,
+			time: "2023-04-19 09:45:15",
+			status: "completed",
+			reportUrl: "reports/batch_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230418-003",
+			type: "single",
+			patientName: "林小芳",
+			patientId: "PT112",
+			age: "31",
+			phone: "13100131000",
+			detail: "双眼图像复查",
+			imageCount: 2,
+			time: "2023-04-18 14:30:20",
+			status: "completed",
+			reportUrl: "reports/single_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230417-002",
+			type: "batch",
+			patientName: "黄斑病变筛查",
+			patientId: "BATCH007",
+			patientCount: "共7名患者",
+			detail: "黄斑病变筛查",
+			imageCount: 14,
+			time: "2023-04-17 11:15:30",
+			status: "failed",
+			reportUrl: "reports/batch_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230416-001",
+			type: "single",
+			patientName: "吴大强",
+			patientId: "PT123",
+			age: "48",
+			phone: "13000130000",
+			detail: "双眼图像初步诊断",
+			imageCount: 2,
+			time: "2023-04-16 10:05:25",
+			status: "completed",
+			reportUrl: "reports/single_report_1.pdf"  // 新增报告路径字段
+		},
+		{
+			id: "OP-20230415-005",
+			type: "single",
+			patientName: "郑小燕",
+			patientId: "PT134",
+			age: "27",
+			phone: "13900239000",
+			detail: "右眼图像复查",
+			imageCount: 1,
+			time: "2023-04-15 16:40:10",
+			status: "completed",
+			reportUrl: "reports/single_report_1.pdf"  // 新增报告路径字段
+		}
+	];
+
+	// 每页显示记录数
+	const recordsPerPage = 6;
+	let currentPage = 1;
+	let filteredRecords = [...allRecords];
+
+	// 初始化页面
+	document.addEventListener('DOMContentLoaded', function() {
+		initDatePicker();
+		initSearch();
+		initExport();
+		renderTable();
+		renderPagination();
+		updatePageInfo();
+	});
+
+	// 初始化日期选择器
+	function initDatePicker() {
+		laydate.render({
+			elem: '#date-range',
+			range: true,
+			theme: '#1890ff'
+		});
+	}
+
+	// 初始化搜索功能
+	function initSearch() {
+		document.getElementById('search-btn').addEventListener('click', function() {
+			filterRecords();
+			currentPage = 1;
+			renderTable();
+			renderPagination();
+			updatePageInfo();
+		});
+
+		document.getElementById('reset-btn').addEventListener('click', function() {
+			document.getElementById('search-name').value = '';
+			document.getElementById('search-type').value = '';
+			document.getElementById('date-range').value = '';
+			document.getElementById('search-status').value = '';
+
+			filteredRecords = [...allRecords];
+			currentPage = 1;
+			renderTable();
+			renderPagination();
+			updatePageInfo();
+		});
+	}
+
+	// 初始化导出功能
+	function initExport() {
+		document.getElementById('export-btn').addEventListener('click', function() {
+			alert('导出功能将在后续版本实现');
+		});
+	}
+
+	// 过滤记录
+	function filterRecords() {
+		const nameQuery = document.getElementById('search-name').value.trim().toLowerCase();
+		const typeQuery = document.getElementById('search-type').value;
+		const dateRange = document.getElementById('date-range').value;
+		const statusQuery = document.getElementById('search-status').value;
+
+		// 解析日期范围
+		let startDate = null, endDate = null;
+		if (dateRange) {
+			const dates = dateRange.split(' - ');
+			if (dates.length === 2) {
+				startDate = new Date(dates[0]);
+				endDate = new Date(dates[1]);
+				endDate.setHours(23, 59, 59, 999);
+			}
+		}
+
+		filteredRecords = allRecords.filter(record => {
+			// 检查姓名/ID匹配
+			const nameMatch = !nameQuery ||
+					record.patientName.toLowerCase().includes(nameQuery) ||
+					record.patientId.toLowerCase().includes(nameQuery);
+
+			// 检查操作类型匹配
+			const typeMatch = !typeQuery || record.type === typeQuery;
+
+			// 检查状态匹配
+			const statusMatch = !statusQuery || record.status === statusQuery;
+
+			// 检查日期范围匹配
+			let dateMatch = true;
+			if (startDate && endDate) {
+				const recordDate = new Date(record.time);
+				dateMatch = recordDate >= startDate && recordDate <= endDate;
+			}
+
+			return nameMatch && typeMatch && statusMatch && dateMatch;
+		});
+	}
+
+	// 渲染表格数据
+	function renderTable() {
+		const tableBody = document.getElementById('table-body');
+		tableBody.innerHTML = '';
+
+		const startIndex = (currentPage - 1) * recordsPerPage;
+		const endIndex = Math.min(startIndex + recordsPerPage, filteredRecords.length);
+		const pageRecords = filteredRecords.slice(startIndex, endIndex);
+
+		if (pageRecords.length === 0) {
+			tableBody.innerHTML = '<tr><td colspan="8" class="no-results">没有找到匹配的记录</td></tr>';
+			return;
+		}
+
+		pageRecords.forEach(record => {
+			const row = document.createElement('tr');
+
+			// 状态标签
+			let statusLabel = '';
+			if (record.status === 'completed') {
+				statusLabel = '<span class="label label-success">已完成</span>';
+			} else if (record.status === 'processing') {
+				statusLabel = '<span class="label label-warning">处理中</span>';
+			} else {
+				statusLabel = '<span class="label label-danger">失败</span>';
+			}
+
+			// 操作类型标签
+			const typeLabel = record.type === 'single'
+					? '<span class="label label-primary">单次审查</span>'
+					: '<span class="label label-info">批量审查</span>';
+
+			// 患者信息
+			let patientInfo = '';
+			if (record.type === 'single') {
+				patientInfo = `
+                        <div><strong>${record.patientName}</strong> (ID: ${record.patientId})</div>
+                        <div>${record.age}岁 | ${record.phone}</div>
+                    `;
+			} else {
+				patientInfo = `
+                        <div><strong>${record.patientName}</strong> (ID: ${record.patientId})</div>
+                        <div>${record.patientCount}</div>
+                    `;
+			}
+
+			// 操作按钮
+			const actionButtons = record.status === 'processing' || record.status === 'failed'
+					? `
+                        <a href="${record.type === 'single' ? 'single-detail' : 'batch-detail'}" class="btn btn-xs btn-default">
+                            <i class="fa fa-eye"></i> 详情
+                        </a>
+                        <a href="#" class="btn btn-xs btn-default" disabled>
+                            <i class="fa fa-download"></i> ${record.type === 'single' ? '报告' : '汇总报告'}
+                        </a>
+                    `
+					: `
+                        <a href="${record.type === 'single' ? 'single-detail' : 'batch-detail'}" class="btn btn-xs btn-default">
+                            <i class="fa fa-eye"></i> 详情
+                        </a>
+                        <a href="${record.reportUrl}" class="btn btn-xs btn-default" download="${record.type === 'single' ? '患者_' + record.patientName + '_诊断报告.pdf' : '批量诊断汇总报告.pdf'}">
+                            <i class="fa fa-download"></i> ${record.type === 'single' ? '报告' : '汇总报告'}
+                        </a>
+                    `;
+
+			row.innerHTML = `
+                    <td>${record.id}</td>
+                    <td>${typeLabel}</td>
+                    <td>${patientInfo}</td>
+                    <td>${record.detail}</td>
+                    <td>${record.imageCount}</td>
+                    <td>${record.time}</td>
+                    <td>${statusLabel}</td>
+                    <td>${actionButtons}</td>
+                `;
+
+			tableBody.appendChild(row);
+		});
+	}
+
+	// 渲染分页导航
+	function renderPagination() {
+		const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+		const pagination = document.getElementById('pagination');
+
+		// 清空现有页码（保留上一页和下一页按钮）
+		while (pagination.children.length > 2) {
+			pagination.removeChild(pagination.children[1]);
+		}
+
+		// 添加页码按钮
+		const maxVisiblePages = 5; // 最多显示5个页码按钮
+		let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+		let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+		// 调整起始页码以确保显示maxVisiblePages个页码
+		if (endPage - startPage + 1 < maxVisiblePages) {
+			startPage = Math.max(1, endPage - maxVisiblePages + 1);
+		}
+
+		// 添加第一页和省略号（如果需要）
+		if (startPage > 1) {
+			addPageButton(pagination, 1);
+			if (startPage > 2) {
+				const li = document.createElement('li');
+				li.innerHTML = '<a href="#">...</a>';
+				pagination.insertBefore(li, pagination.children[1]);
+			}
+		}
+
+		// 添加页码按钮
+		for (let i = startPage; i <= endPage; i++) {
+			addPageButton(pagination, i);
+		}
+
+		// 添加最后一页和省略号（如果需要）
+		if (endPage < totalPages) {
+			if (endPage < totalPages - 1) {
+				const li = document.createElement('li');
+				li.innerHTML = '<a href="#">...</a>';
+				pagination.insertBefore(li, pagination.lastElementChild);
+			}
+			addPageButton(pagination, totalPages);
+		}
+
+		// 更新上一页/下一页按钮状态
+		updatePaginationButtons();
+	}
+
+	// 添加页码按钮
+	function addPageButton(pagination, page) {
+		const li = document.createElement('li');
+		if (page === currentPage) {
+			li.className = 'active';
+		}
+
+		const a = document.createElement('a');
+		a.href = '#';
+		a.textContent = page;
+		a.onclick = function(e) {
+			e.preventDefault();
+			goToPage(page);
+		};
+
+		li.appendChild(a);
+		pagination.insertBefore(li, pagination.lastElementChild);
+	}
+
+	// 更新分页按钮状态
+	function updatePaginationButtons() {
+		const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+		const prevButton = document.querySelector('.pagination li:first-child');
+		const nextButton = document.querySelector('.pagination li:last-child');
+
+		prevButton.classList.toggle('disabled', currentPage === 1);
+		nextButton.classList.toggle('disabled', currentPage === totalPages || totalPages === 0);
+	}
+
+	// 跳转到指定页码
+	function goToPage(page) {
+		const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+		if (page < 1 || page > totalPages) {
+			return;
+		}
+
+		currentPage = page;
+		renderTable();
+		renderPagination();
+		updatePageInfo();
+
+		// 滚动到表格顶部
+		document.querySelector('.panel-body').scrollIntoView({ behavior: 'smooth' });
+	}
+
+	// 更新页面信息
+	function updatePageInfo() {
+		document.getElementById('total-records').textContent = filteredRecords.length;
+		document.getElementById('current-page').textContent = currentPage;
+		document.getElementById('total-pages').textContent = Math.ceil(filteredRecords.length / recordsPerPage) || 1;
+	}
+
+	// 分页按钮事件委托
+	document.getElementById('pagination').addEventListener('click', function(e) {
+		const target = e.target.closest('a');
+		if (!target) return;
+
+		if (target.getAttribute('aria-label') === 'Previous') {
+			e.preventDefault();
+			goToPage(currentPage - 1);
+		} else if (target.getAttribute('aria-label') === 'Next') {
+			e.preventDefault();
+			goToPage(currentPage + 1);
+		}
+	});
+</script>
+</body>
+
+</html>

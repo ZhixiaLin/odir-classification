@@ -1,0 +1,349 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>数据查询</title>
+	<script src="js/jquery.js"></script>
+	<link href="css/font-awesome.css" rel="stylesheet">
+	<link href="css/bootstrap.css" rel="stylesheet">
+	<link href="css/style-responsive.css" rel="stylesheet">
+	<link href="css/default-theme.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	<link href="css/bootstrap-reset.css" rel="stylesheet">
+</head>
+
+<body class="sticky-header">
+<div class="header-section">
+	<div class="kouhao"><img src="img/logo1.png">智慧之眼</div>
+	<div class="pull-right userdt"><img src="img/img2.jpg">医生</div>
+</div>
+	<section>
+		<div class="sidebar-left">
+			<div class="sidebar-left-info">
+				<div class=" search-field"> </div>
+				<ul class="nav nav-pills nav-stacked side-navigation">
+					<li class="active">
+						<a th:href="@{/dashboard}"><i class="fa fa-dashboard"></i> <span>控制台</span></a>
+					</li>
+					<li class="menu-list">
+						<a href="">
+							<i class="fa fa-wheelchair-alt"></i> <span>患者管理</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/add-patient}">添加患者</a></li>
+							<li><a th:href="@{/patient-list}">患者列表</a></li>
+							<li><a th:href="@{/data-query}">数据查询</a></li>
+						</ul>
+					</li>
+					<li class="menu-list">
+						<a href="">
+							<i class="fa fa-address-photo"></i> <span>图像管理</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/fundus-image-history}">眼底图像历史记录</a></li>
+						</ul>
+					</li>
+					<li class="menu-list">
+						<a href="">
+							<i class="fa fa-address-book"></i> <span>眼底图像诊断</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/UploadDualEyeImages}">双眼图像上传与诊断</a></li>
+							<li><a th:href="@{/eye-image-upload-single}">双眼图像上传与诊断-单批</a></li>
+						</ul>
+					</li>
+					<li class="menu-list">
+						<a href="">
+							<i class="fa fa-user-md"></i> <span>医生管理</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/add-doctor}">添加医生</a></li>
+							<li><a th:href="@{/doctor-list}">医生列表</a></li>
+						</ul>
+					</li>
+					<li class="menu-list">
+						<a href="javascript:;">
+							<i class="fa fa-pie-chart"></i> <span>统计管理</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/statistics}">统计管理</a></li>
+						</ul>
+					</li>
+					<li class="menu-list">
+						<a href="">
+							<i class="fa fa-cog"></i> <span>系统设置</span>
+						</a>
+						<ul class="child-list">
+							<li><a th:href="@{/change-password}">修改密码</a></li>
+							<li><a th:href="@{/system-help}">系统使用说明</a></li>
+							<li><a th:href="@{/personal-info}">个人信息</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="body-content">
+			<div class="page-head clearfix">
+				<ol class="breadcrumb pull-left">
+					<li><a href="#"><i class="fa fa-wheelchair-alt"></i>统计管理</a></li>
+					<li class="active">数据查询</li>
+				</ol>
+				<div class="pull-right breadcrumbtn"> </div>
+			</div>
+			<div class="wrapper">
+				<section class="panel">
+					<header class="panel-heading head-border">数据查询</header>
+					<div class="panel-body">
+
+
+						<div class="form1">
+							<ul class="row">
+
+								<li class="col-xs-12">
+									<span>患者分组：</span>
+									<div style="padding-top:4px">
+										<a href="#" class="btn btn-default btn-primary btn-sm">糖尿病</a>
+										<a href="#" class="btn btn-sm btn-default">高血压</a>
+										<a href="#" class="btn btn-sm btn-default">AMD</a>
+										<a href="#" class="btn btn-sm btn-default">青光眼</a>
+										<a href="#" class="btn btn-sm btn-default">白内障</a>
+										<a href="#" class="btn btn-sm btn-default">近视</a>
+										<a href="#" class="btn btn-sm btn-default">其他</a>
+
+									</div>
+								</li>
+
+								<li class="col-xs-4">
+									<span>图像状态：</span>
+									<select class="form-control">
+										<option>全部</option>
+									</select>
+								</li>
+
+								<li class="col-xs-4">
+									<span>数据质量：</span>
+									<select class="form-control">
+										<option>全部</option>
+									</select>
+								</li>
+								<li class="col-xs-3">
+									<span>性别：</span>
+									<select class="form-control">
+										<option>全部</option>
+										<option>男</option>
+										<option>女</option>
+									</select>
+								</li>
+								<li class="col-xs-4">
+									<span>年龄范围：</span>
+									<div class="pull-left" style="width:40px; margin:0px 3px;"><input type="text"
+											class="form-control" placeholder="岁"></div>
+									<div class="pull-left" style="width:40px; margin:0px 3px;"><input type="text"
+											class="form-control" placeholder="月"></div>
+									<div class="pull-left" style="padding-top:8px;">至</div>
+									<div class="pull-left" style="width:40px; margin:0px 3px;"><input type="text"
+											class="form-control" placeholder="岁"></div>
+									<div class="pull-left" style="width:40px; margin:0px 3px;"><input type="text"
+											class="form-control" placeholder="月 "></div>
+								</li>
+								<li class="col-xs-4">
+									<span>建档时间：</span>
+									<input type="text" class="form-control date">
+								</li>
+
+								<li class="pull-left" style="padding-left: 10px;">
+									<a href="#" class="btn btn-primary">查询</a>
+									<a href="#" class="btn btn-default">重置</a>
+								</li>
+
+
+
+
+							</ul>
+						</div>
+
+
+
+
+						<table class="table m-t-20">
+							<thead>
+								<tr>
+									<th>门诊号</th>
+									<th>患者姓名</th>
+									<th>年龄</th>
+									<th>联系电话</th>
+									<th>姓别</th>
+									<th>图像时间</th>
+									<th>图像状态</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>EB170001</td>
+									<td>张东亮</td>
+									<td>34岁2月</td>
+									<td>13652645256</td>
+									<td>男</td>
+									<td>2025.3.1</td>
+									<td>
+										<div class="jdbarnew jdbar2new clearfix">
+											<img src="img\gaoxueyashuizhong.png" alt="左眼" class="eye-image">
+											<img src="img\gaoxueyashuizhong.png" alt="右眼" class="eye-image">
+										</div>
+									</td>
+									<td><a href="#">查看</a>
+										<a href="#">导出</a>
+									</td>
+								</tr>
+								<tr>
+									<td>EB170001</td>
+									<td>张东亮</td>
+									<td>34岁2月</td>
+									<td>13652645256</td>
+									<td>男</td>
+									<td>2025.3.1</td>
+									<td>
+										<div class="jdbarnew jdbar2new clearfix">
+											<img src="img\gaoxueyashuizhong.png" alt="左眼" class="eye-image">
+											<img src="img\gaoxueyashuizhong.png" alt="右眼" class="eye-image">
+										</div>
+									</td>
+									<td><a href="#">查看</a>
+										<a href="#">导出</a>
+									</td>
+								</tr>
+								<tr>
+									<td>EB170001</td>
+									<td>张东亮</td>
+									<td>34岁2月</td>
+									<td>13652645256</td>
+									<td>男</td>
+									<td>2025.3.1</td>
+									<td>
+										<div class="jdbarnew jdbar2new clearfix">
+											<img src="img\gaoxueyashuizhong.png" alt="左眼" class="eye-image">
+											<img src="img\gaoxueyashuizhong.png" alt="右眼" class="eye-image">
+										</div>
+									</td>
+									<td><a href="#">查看</a>
+										<a href="#">导出</a>
+									</td>
+								</tr>
+								<tr>
+									<td>EB170001</td>
+									<td>张东亮</td>
+									<td>34岁2月</td>
+									<td>13652645256</td>
+									<td>男</td>
+									<td>2025.3.1</td>
+									<td>
+										<div class="jdbarnew jdbar2new clearfix">
+											<img src="img\gaoxueyashuizhong.png" alt="左眼" class="eye-image">
+											<img src="img\gaoxueyashuizhong.png" alt="右眼" class="eye-image">
+										</div>
+									</td>
+									<td><a href="#">查看</a>
+										<a href="#">导出</a>
+									</td>
+								</tr>
+								<tr>
+									<td>EB170001</td>
+									<td>张东亮</td>
+									<td>34岁2月</td>
+									<td>13652645256</td>
+									<td>男</td>
+									<td>2025.3.1</td>
+									<td>
+										<div class="jdbarnew jdbar2new clearfix">
+											<img src="img\gaoxueyashuizhong.png" alt="左眼" class="eye-image">
+											<img src="img\gaoxueyashuizhong.png" alt="右眼" class="eye-image">
+										</div>
+									</td>
+									<td><a href="#">查看</a>
+										<a href="#">导出</a>
+									</td>
+								</tr>
+								<tr>
+									<td>EB170001</td>
+									<td>张东亮</td>
+									<td>34岁2月</td>
+									<td>13652645256</td>
+									<td>男</td>
+									<td>2025.3.1</td>
+									<td>
+										<div class="jdbarnew jdbar2new clearfix">
+											<img src="img\gaoxueyashuizhong.png" alt="左眼" class="eye-image">
+											<img src="img\gaoxueyashuizhong.png" alt="右眼" class="eye-image">
+										</div>
+									</td>
+									<td><a href="#">查看</a>
+										<a href="#">导出</a>
+									</td>
+								</tr>
+								<tr>
+									<td>EB170001</td>
+									<td>张东亮</td>
+									<td>34岁2月</td>
+									<td>13652645256</td>
+									<td>男</td>
+									<td>2025.3.1</td>
+									<td>
+										<div class="jdbarnew jdbar2new clearfix">
+											<img src="img\gaoxueyashuizhong.png" alt="左眼" class="eye-image">
+											<img src="img\gaoxueyashuizhong.png" alt="右眼" class="eye-image">
+										</div>
+									</td>
+									<td><a href="#">查看</a>
+										<a href="#">导出</a>
+									</td>
+								</tr>
+
+							</tbody>
+						</table>
+
+						<div class="page clearfix">
+							<div class="pull-left">共 400 条记录 第 1 / 80 页</div>
+							<div class="pull-right">
+								<nav aria-label="..." class="pull-left">
+									<ul class="pagination">
+										<li class="disabled"><a href="#" aria-label="Previous"><span
+													aria-hidden="true">«</span></a></li>
+										<li class="active"><a href="#">1 </a></li>
+										<li><a href="#">2</a></li>
+										<li><a href="#">3</a></li>
+										<li><a href="#">4</a></li>
+										<li><a href="#">5</a></li>
+										<li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+									</ul>
+								</nav>
+
+							</div>
+
+						</div>
+
+
+					</div>
+				</section>
+			</div>
+		</div>
+	</section>
+
+
+
+	<script src="js/bootstrap.js"></script>
+	<script src="js/echarts.min.js"></script>
+	<script src="js/scripts.js"></script>
+	<script src="laydate/laydate.js"></script>
+	<script>
+		lay('#version').html('-v' + laydate.v);
+		laydate.render({
+			elem: '#test1'
+			, range: true
+			, theme: '#1890ff'
+		});
+	</script>
+</body>
+
+</html>
