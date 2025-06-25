@@ -31,6 +31,7 @@ ai-model-python
 ├── requirements.txt
 ├── setup.py
 ├── train.py
+├── clean_misclassified.py
 └── validate_by_category.py
 ```
 
@@ -171,6 +172,29 @@ python validate_by_category.py --config configs/odir/resnet50.yaml --ckpt_path c
 # 该模式除了计算准确率外，还会将所有分类错误的图片路径记录到一个日志文件中，便于后续分析。
 python validate_by_category.py --config configs/odir/resnet50.yaml --ckpt_path checkpoints/resnet50-best.ckpt --mode full
 ```
+
+### 4. 清除错误分类图片
+
+To move all misclassified images
+```
+python clean_misclassified.py --action move_all
+```
+
+To move and keep a percentage of misclassified images (e.g., keep 20%)
+```
+python clean_misclassified.py --action move_percentage --keep_percentage 20
+```
+
+To deltete all files under misclassified_images/
+```
+python clean_misclassified.py --action clean_quarantine
+```
+
+To see what would happen without actually doing it (dry run)
+```
+python clean_misclassified.py --action move --dry_run
+```
+
 
 ## 模型架构与优化
 
